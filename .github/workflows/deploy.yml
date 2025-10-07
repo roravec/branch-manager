@@ -1,6 +1,7 @@
 name: Deploy Submodule and Src to FTP
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
