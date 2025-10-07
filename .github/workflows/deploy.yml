@@ -1,10 +1,7 @@
-name: Deploy Submodule and Src to FTP
+name: Deploy to FTP
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -14,21 +11,25 @@ jobs:
       - name: Checkout repo with submodules
         uses: actions/checkout@v3
         with:
-          submodules: recursive  # This pulls submodule content
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Debug FTP credentials (safe test)
+      - name: Check if FTP_PASS is set
         run: |
-          echo "Host: ${{ secrets.FTP_HOST }}"
-          echo "User: ${{ secrets.FTP_USER }}"
-          echo "Pass length: ${#${{ secrets.FTP_PWD }}}"
+          if [ -z "${{ secrets.FTP_PASS }}" ]; then
+            echo "FTP_PASS is empty or not set"
+            exit 1
+          else
+            echo "FTP_PASS is set"
+          fi
 
       - name: Upload submodule files to FTP (Directory A)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PWD }}
-          local-dir: WebApplication/  # Replace with actual submodule path
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: WebApplication/
           server-dir: /
 
       - name: Upload src/ files to FTP (Directory B)
@@ -36,6 +37,6 @@ jobs:
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PWD }}
+          password: ${{ secrets.FTP_PASS }}
           local-dir: src/
           server-dir: /applications/branchmanager/
