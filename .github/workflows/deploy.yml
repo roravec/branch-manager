@@ -29,6 +29,8 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          passive: true
           local-dir: WebApplication/
           server-dir: /
 
@@ -38,5 +40,7 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          passive: true
           local-dir: src/
           server-dir: /applications/branchmanager/
