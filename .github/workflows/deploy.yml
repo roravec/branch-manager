@@ -29,9 +29,10 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
+          dry-run: true
           protocol: ftp
-          passive: true
-          local-dir: WebApplication/
+          timeout: 120000
+          local-dir: WebApplication/src/
           server-dir: /
 
       - name: Upload src/ files to FTP (Directory B)
@@ -40,7 +41,8 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
+          dry-run: true
+          timeout: 120000
           protocol: ftp
-          passive: true
           local-dir: src/
           server-dir: /applications/branchmanager/
