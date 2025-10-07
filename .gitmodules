@@ -1,0 +1,3 @@
+[submodule "WebApplication"]
+	path = WebApplication
+	url = https://github.com/roravec/WebApplication
