@@ -1,0 +1,34 @@
+name: Deploy Submodule and Src to FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo with submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive  # This pulls submodule content
+
+      - name: Upload submodule files to FTP (Directory A)
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: submodules/WebApplication  # Replace with actual submodule path
+          server-dir: /
+
+      - name: Upload src/ files to FTP (Directory B)
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: src
+          server-dir: /applications/branchmanager/
