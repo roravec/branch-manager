@@ -43,4 +43,4 @@ jobs:
           timeout: 120000
           protocol: ftp
           local-dir: src/
-          server-dir: /applications/branchmanager/
+          server-dir: applications/branchmanager/
