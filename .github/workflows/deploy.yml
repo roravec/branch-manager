@@ -20,14 +20,14 @@ jobs:
         run: |
           echo "Host: ${{ secrets.FTP_HOST }}"
           echo "User: ${{ secrets.FTP_USER }}"
-          echo "Pass length: ${#${{ secrets.FTP_PASS }}}"
+          echo "Pass length: ${#${{ secrets.FTP_PWD }}}"
 
       - name: Upload submodule files to FTP (Directory A)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
+          password: ${{ secrets.FTP_PWD }}
           local-dir: WebApplication/  # Replace with actual submodule path
           server-dir: /
 
@@ -36,6 +36,6 @@ jobs:
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
+          password: ${{ secrets.FTP_PWD }}
           local-dir: src/
           server-dir: /applications/branchmanager/
