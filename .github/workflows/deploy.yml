@@ -16,7 +16,7 @@ jobs:
           submodules: recursive  # This pulls submodule content
 
       - name: Upload submodule files to FTP (Directory A)
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
@@ -25,7 +25,7 @@ jobs:
           server-dir: /
 
       - name: Upload src/ files to FTP (Directory B)
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
