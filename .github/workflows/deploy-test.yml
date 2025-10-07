@@ -1,0 +1,11 @@
+name: Secret Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo secret length
+        run: echo "FTP_PASS length: ${#${{ secrets.FTP_PASS }}}"
