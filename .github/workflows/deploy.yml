@@ -29,7 +29,6 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          dry-run: true
           protocol: ftp
           timeout: 120000
           local-dir: WebApplication/src/
@@ -41,7 +40,6 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          dry-run: true
           timeout: 120000
           protocol: ftp
           local-dir: src/
