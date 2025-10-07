@@ -16,6 +16,12 @@ jobs:
         with:
           submodules: recursive  # This pulls submodule content
 
+      - name: Debug FTP credentials (safe test)
+        run: |
+          echo "Host: ${{ secrets.FTP_HOST }}"
+          echo "User: ${{ secrets.FTP_USER }}"
+          echo "Pass length: ${#${{ secrets.FTP_PASS }}}"
+
       - name: Upload submodule files to FTP (Directory A)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
