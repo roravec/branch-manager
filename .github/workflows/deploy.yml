@@ -26,7 +26,7 @@ jobs:
             echo "FTP_PASS is set"
           fi
 
-      - name: Upload submodule files to FTP (Directory A)
+      - name: Upload submodule files - API root application
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -35,9 +35,9 @@ jobs:
           protocol: ftp
           timeout: 120000
           local-dir: WebApplication/src/
-          server-dir: /
+          server-dir: api/
 
-      - name: Upload src/ files to FTP (Directory B)
+      - name: Upload src/dist/ files to FTP (Frontend)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -45,5 +45,16 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           timeout: 120000
           protocol: ftp
-          local-dir: src/
-          server-dir: applications/branchmanager/
+          local-dir: src/frontend/dist/
+          server-dir: /
+          
+      - name: Upload src/backend/ files to FTP (Backend)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          timeout: 120000
+          protocol: ftp
+          local-dir: src/backend/
+          server-dir: api/applications/branchmanager/
