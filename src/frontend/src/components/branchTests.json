@@ -1,0 +1,151 @@
+[
+  {
+    "name": "Kaviareň Central",
+    "industry": "Kaviareň",
+    "address": "Hlavná 12, Bratislava",
+    "hours": "8:00 - 20:00",
+    "phone": "+421901234567",
+    "website": "https://kaviaren-central.sk",
+    "gps": [48.1486, 17.1077],
+    "staff": [
+      {"name":"Jana Nováková","position":"Baristka"},
+      {"name":"Peter Kováč","position":"Manažér"},
+      {"name":"Mária Svobodová","position":"Servírka"},
+      {"name":"Lukáš Bielik","position":"Servírka"},
+      {"name":"Eva Horváthová","position":"Baristka"}
+    ]
+  },
+  {
+    "name": "IT Solutions",
+    "industry": "IT služby",
+    "address": "Tech Park 5, Košice",
+    "hours": "9:00 - 18:00",
+    "phone": "+421902345678",
+    "website": "https://itsolutions.sk",
+    "gps": [48.7164, 21.2611],
+    "staff": [
+      {"name":"Martin Horváth","position":"Developer"},
+      {"name":"Lucia Bieliková","position":"Tester"},
+      {"name":"Tomáš Malý","position":"Project Manager"},
+      {"name":"Eva Krajčírová","position":"Support"},
+      {"name":"Marek Kováč","position":"Developer"},
+      {"name":"Petra Poláková","position":"Tester"}
+    ]
+  },
+  {
+    "name": "AutoServis Plus",
+    "industry": "Autoservis",
+    "address": "Priemyselná 3, Trnava",
+    "hours": "7:00 - 17:00",
+    "phone": "+421903456789",
+    "website": "https://autoservisplus.sk",
+    "gps": [48.3775, 17.5883],
+    "staff": [
+      {"name":"Miroslav Dvořák","position":"Mechanik"},
+      {"name":"Anna Horáková","position":"Recepcia"},
+      {"name":"Filip Urban","position":"Mechanik"},
+      {"name":"Ivana Králová","position":"Manažér"},
+      {"name":"Peter Juhás","position":"Mechanik"}
+    ]
+  },
+  {
+    "name": "Fitness World",
+    "industry": "Šport a fitness",
+    "address": "Športová 21, Nitra",
+    "hours": "6:00 - 22:00",
+    "phone": "+421904567890",
+    "website": "https://fitnessworld.sk",
+    "gps": [48.3064, 18.0846],
+    "staff": [
+      {"name":"Peter Juhás","position":"Tréner"},
+      {"name":"Monika Poláková","position":"Recepcia"},
+      {"name":"Jozef Kubiš","position":"Tréner"},
+      {"name":"Lenka Urbanová","position":"Trénerka"},
+      {"name":"Martin Kováč","position":"Manažér"},
+      {"name":"Eva Farkašová","position":"Trénerka"},
+      {"name":"Tomáš Bielik","position":"Tréner"}
+    ]
+  },
+  {
+    "name": "Kníhkupectvo Luna",
+    "industry": "Kníhkupectvo",
+    "address": "Mestská 8, Prešov",
+    "hours": "9:00 - 19:00",
+    "phone": "+421905678901",
+    "website": "https://knihkprešov.sk",
+    "gps": [49.0000, 21.2333],
+    "staff": [
+      {"name":"Alena Horváthová","position":"Predavačka"},
+      {"name":"Milan Novotný","position":"Manažér"},
+      {"name":"Lucia Farkašová","position":"Predavačka"},
+      {"name":"Tomáš Krajčík","position":"Predavač"},
+      {"name":"Anna Urbanová","position":"Predavačka"}
+    ]
+  },
+  {
+    "name": "Pizzeria Bella",
+    "industry": "Reštaurácia",
+    "address": "Kráľovská 15, Žilina",
+    "hours": "10:00 - 23:00",
+    "phone": "+421906789012",
+    "website": "https://pizzeriabella.sk",
+    "gps": [49.2233, 18.7393],
+    "staff": [
+      {"name":"Martin Hrivnák","position":"Kuchár"},
+      {"name":"Jana Poláková","position":"Čašníčka"},
+      {"name":"Peter Farkaš","position":"Manažér"},
+      {"name":"Lucia Nováková","position":"Kuchárka"}
+    ]
+  },
+  {
+    "name": "SuperMarket Max",
+    "industry": "Potraviny",
+    "address": "Obchodná 3, Banská Bystrica",
+    "hours": "7:00 - 21:00",
+    "phone": "+421907890123",
+    "website": "https://supermarketmax.sk",
+    "gps": [48.7364, 19.1536],
+    "staff": [
+      {"name":"Eva Kubišová","position":"Pokladníčka"},
+      {"name":"Jozef Urban","position":"Manažér"},
+      {"name":"Marek Bielik","position":"Skladník"},
+      {"name":"Lucia Hrivnáková","position":"Pokladníčka"},
+      {"name":"Peter Novotný","position":"Pokladník"}
+    ]
+  },
+  {
+    "name": "Café Aroma",
+    "industry": "Kaviareň",
+    "address": "Hlavná 25, Trnava",
+    "hours": "8:00 - 20:00",
+    "phone": "+421908901234",
+    "website": "https://cafearoma.sk",
+    "gps": [48.3770, 17.5900],
+    "staff": [
+      {"name":"Mária Juhásová","position":"Baristka"},
+      {"name":"Peter Malý","position":"Servír"},
+      {"name":"Lucia Svobodová","position":"Baristka"},
+      {"name":"Filip Krajčík","position":"Manažér"},
+      {"name":"Jana Bieliková","position":"Servírka"}
+    ]
+  },
+  {
+    "name": "TechCorp",
+    "industry": "IT služby",
+    "address": "Inovačný park 7, Košice",
+    "hours": "9:00 - 18:00",
+    "phone": "+421909012345",
+    "website": "https://techcorp.sk",
+    "gps": [48.7200, 21.2500],
+    "staff": [
+      {"name":"Martin Novák","position":"Developer"},
+      {"name":"Eva Poláková","position":"Tester"},
+      {"name":"Peter Kováč","position":"Project Manager"},
+      {"name":"Lucia Hrivnáková","position":"Tester"},
+      {"name":"Tomáš Malý","position":"Support"},
+      {"name":"Marek Farkaš","position":"Developer"},
+      {"name":"Anna Bieliková","position":"Tester"},
+      {"name":"Filip Novotný","position":"Developer"}
+    ]
+  }
+]

@@ -1,0 +1,133 @@
+@import "./base.css";
+
+/*
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  font-weight: normal;
+  
+}
+*/
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+  }
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.4;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 3px;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: var(--color-bg);
+}
+
+.btn {
+  color: var(--color-text);
+  background: var(--color-accent);
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.tabs {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 1em;
+}
+
+
+.tabs button {
+  flex: 1;
+  padding: 6px;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+  color: var(--color-heading);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+  width: auto;
+  flex: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.tabs button:hover {
+  transform: translateY(-2px);
+}
+
+.tabs button.active {
+  background: var(--color-accent);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.icon{
+  max-width: 2em;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  fill: var(--color-heading);
+}
+
+a {
+  color: var(--color-link);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th,
+td {
+  border: 1.5px solid var(--color-bg-secondary);
+  padding: 3px 5px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--color-bg-secondary);
+}
+
+input {
+  padding: 10px;
+  border: 1px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  border-radius: 8px;
+}

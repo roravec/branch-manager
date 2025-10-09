@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+:root {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f0f0f0;
+
+  --color-text: #222831;
+  --color-heading: #222831;
+
+  --color-accent: #00adb5;
+  --color-accent-hover: #00c1c9;
+  --color-accent-active: #009aa1;
+
+  --color-border: #dddddd;
+
+  --color-link: #2980b9;
+
+  --gradient-bg: linear-gradient(135deg, #00adb5, #eeeeee);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #222831;
+    --color-bg-secondary: #393e46;
+
+    --color-text: #eeeeee;
+    --color-heading: #eeeeee;
+
+    --color-accent: #00adb5;
+    --color-accent-hover: #00c1c9;
+    --color-accent-active: #009aa1;
+
+    --color-border: #555555;
+
+    --color-link: #2980b9;
+
+    --gradient-bg: linear-gradient(135deg, #00adb5, #222831);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--gradient-bg);
+  transition: color 0.5s, background-color 0.5s;
+  line-height: 1.6;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

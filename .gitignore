@@ -471,3 +471,9 @@ composer.lock
 *.css.map
 *.sass.map
 *.scss.map
+
+##### Vue project
+*node_modules
+
+##### Editor configs
+*.vscode/
