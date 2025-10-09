@@ -30,12 +30,23 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
+          username: ${{ secrets.FTP_USER_API }}
           password: ${{ secrets.FTP_PASS }}
           protocol: ftp
           timeout: 120000
           local-dir: WebApplication/src/
-          server-dir: api/
+          server-dir: /
+
+      - name: Upload src/backend/ files to FTP (Backend)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER_API }}
+          password: ${{ secrets.FTP_PASS }}
+          timeout: 120000
+          protocol: ftp
+          local-dir: src/backend/
+          server-dir: applications/branchmanager/
 
       - name: Upload src/dist/ files to FTP (Frontend)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -47,14 +58,3 @@ jobs:
           protocol: ftp
           local-dir: src/frontend/dist/
           server-dir: /
-          
-      - name: Upload src/backend/ files to FTP (Backend)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          timeout: 120000
-          protocol: ftp
-          local-dir: src/backend/
-          server-dir: api/applications/branchmanager/
