@@ -11,6 +11,15 @@ class BranchManager implements IWebApp
 
     public function post($rootApplication): string
     {
+        $id = $rootApplication->getUriSegment(1);
+        switch ($rootApplication->getUriSegment(0)) {
+            case 'user':
+                return "POST user: $id";
+            case 'users':
+                return "POST users: $id";
+            default:
+                return "POST request handled";
+        }
         // Implementation for POST request
         return "POST request handled";
     }
