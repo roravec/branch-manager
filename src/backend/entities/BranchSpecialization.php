@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../core/Database.php';
-require_once __DIR__ . '/../entities/BaseEntity.php';
-require_once __DIR__ . '/../interfaces/ICrud.php';
+require_once __DIR__ . '/../../../core/Database.php';
+require_once __DIR__ . '/../../../entities/BaseEntity.php';
+require_once __DIR__ . '/../../../interfaces/ICrud.php';
 
 
 class BranchSpecialization extends BaseEntity implements ICrud

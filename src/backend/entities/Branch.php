@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../core/Database.php';
-require_once __DIR__ . '/../entities/BaseEntity.php';
-require_once __DIR__ . '/../interfaces/ICrud.php';
+require_once __DIR__ . '/../../../core/Database.php';
+require_once __DIR__ . '/../../../entities/BaseEntity.php';
+require_once __DIR__ . '/../../../interfaces/ICrud.php';
 
 
 class Branch extends BaseEntity implements ICrud
@@ -18,16 +18,17 @@ class Branch extends BaseEntity implements ICrud
         INSERT INTO 
         '.$this->getTableName().'
         (
-            name, coordinates, address, description, employees, utilization
+            name, coordinates, address, address2, description, employees, utilization
         )
         VALUES (
-            ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?
         );
         ';
         $params = [
             $this->name,
             $this->coordinates,
             $this->address,
+            $this->address2,
             $this->description,
             $this->employees,
             $this->utilization
@@ -54,6 +55,7 @@ class Branch extends BaseEntity implements ICrud
             $this->name = $result[0]['name'];
             $this->coordinates = $result[0]['coordinates'];
             $this->address = $result[0]['address'];
+            $this->address2 = $result[0]['address2'];
             $this->description = $result[0]['description'];
             $this->employees = $result[0]['employees'];
             $this->utilization = $result[0]['utilization'];
@@ -74,6 +76,7 @@ class Branch extends BaseEntity implements ICrud
             name = ?,
             coordinates = ?,
             address = ?,
+            address2 = ?,
             description = ?,
             employees = ?,
             utilization = ?
@@ -83,6 +86,7 @@ class Branch extends BaseEntity implements ICrud
             $this->name,
             $this->coordinates,
             $this->address,
+            $this->address2,
             $this->description,
             $this->employees,
             $this->utilization,
@@ -107,11 +111,38 @@ class Branch extends BaseEntity implements ICrud
         return $result !== false;
     }
 
+    public static function readAll($database): array
+    {
+        $query = '
+        SELECT * FROM '.$database->getPrefix().self::$TABLE_NAME.';
+        ';
+        $result = $database->query($query);
+        $branches = [];
+        if ($result)
+        {
+            foreach ($result as $row)
+            {
+                $branch = new Branch($database);
+                $branch->id = $row['id'];
+                $branch->name = $row['name'];
+                $branch->coordinates = $row['coordinates'];
+                $branch->address = $row['address'];
+                $branch->address2 = $row['address2'];
+                $branch->description = $row['description'];
+                $branch->employees = $row['employees'];
+                $branch->utilization = $row['utilization'];
+                $branches[] = $branch;
+            }
+        }
+        return $branches;
+    }
+
 	/** Database columns  *******************/
 	public $id=0;
 	public $name="";
 	public $coordinates="";
 	public $address="";
+	public $address2="";
 	public $description="";
 	public $employees=0;
 	public $utilization=0;
