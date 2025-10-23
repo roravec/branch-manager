@@ -46,20 +46,21 @@ class BranchManager implements IWebApp
         $this->rootApp = $rootApplication;
         $identifier = $rootApplication->getUriSegment(1);
         switch ($rootApplication->getUriSegment(0)) {
-            case 'register':
-                return $this->registerClient();
-            case 'login':
-                return $this->login();
-            case 'logout':
-                return $this->logout();
-            case 'authrefresh':
-                return $this->authRefresh();
             case 'user':
                 if ($identifier === "create") {
                     return $this->createUser();
                 }
                 else if ($identifier === "register") {
                     return $this->registerClient();
+                }
+                else if ($identifier === "login") {
+                    return $this->login();
+                }
+                else if ($identifier === "logout") {
+                    return $this->logout();
+                }
+                else if ($identifier === "authrefresh") {
+                    return $this->authRefresh();
                 }
                 break;
             default:
@@ -117,13 +118,14 @@ class BranchManager implements IWebApp
         $client = new Client($this->rootApp->getDatabase());
         $client->identifier = isset($_POST['identifier']) ? $_POST['identifier'] : null;
         $client->name = isset($_POST['name']) ? $_POST['name'] : null;
-        $client->secret_hash = isset($_POST['secret_hash']) ? $_POST['secret'] : null;
+        $client->secret_hash = isset($_POST['secret']) ? $_POST['secret'] : null;
         if (Client::readByIdentifier($this->rootApp->getDatabase(), $client->identifier))
         {
             http_response_code(400);
             return json_encode(['error' => 'Client with this identifier already exists']);
         }
         //$client->create();
+        $client->secret_hash = '';
         return json_encode($client);
     }
 
@@ -132,13 +134,14 @@ class BranchManager implements IWebApp
         $client = new Client($this->rootApp->getDatabase());
         $client->identifier = isset($_POST['identifier']) ? $_POST['identifier'] : null;
         $client->name = isset($_POST['name']) ? $_POST['name'] : null;
-        $client->secret_hash = isset($_POST['secret_hash']) ? $_POST['secret'] : null;
+        $client->secret_hash = isset($_POST['secret']) ? $_POST['secret'] : null;
         if (Client::readByIdentifier($this->rootApp->getDatabase(), $client->identifier))
         {
             http_response_code(400);
             return json_encode(['error' => 'Client with this identifier already exists']);
         }
         $client->create();
+        $client->secret_hash = '';
         return json_encode($client);
     }
 
