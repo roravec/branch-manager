@@ -33,7 +33,7 @@ class Branch extends BaseEntity implements ICrud
             $this->employees,
             $this->utilization
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -92,7 +92,7 @@ class Branch extends BaseEntity implements ICrud
             $this->utilization,
             $this->id
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -107,7 +107,7 @@ class Branch extends BaseEntity implements ICrud
         WHERE id = ?;
         ';
         $params = [$this->id];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 

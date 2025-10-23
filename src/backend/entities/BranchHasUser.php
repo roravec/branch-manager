@@ -28,7 +28,7 @@ class BranchHasUser extends BaseEntity implements ICrud
             $this->userId,
             $this->userRights
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -68,7 +68,7 @@ class BranchHasUser extends BaseEntity implements ICrud
             $this->branchId,
             $this->userId
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -83,7 +83,7 @@ class BranchHasUser extends BaseEntity implements ICrud
             $this->branchId,
             $this->userId
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 

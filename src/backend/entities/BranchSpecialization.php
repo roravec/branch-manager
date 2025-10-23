@@ -27,7 +27,7 @@ class BranchSpecialization extends BaseEntity implements ICrud
             $this->name,
             $this->description
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -66,7 +66,7 @@ class BranchSpecialization extends BaseEntity implements ICrud
             $this->description,
             $this->id
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
     public function delete($id = 0): bool
@@ -79,7 +79,7 @@ class BranchSpecialization extends BaseEntity implements ICrud
         $params = [
             $id
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
