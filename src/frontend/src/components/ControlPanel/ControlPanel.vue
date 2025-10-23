@@ -125,20 +125,26 @@ const toggleTab = (tabName) => {
   align-items: flex-start;
   width: auto;
   height: calc(100vh - 1em);
-
 }
 
 .tabs {
   display: flex;
+  flex-wrap: nowrap;
   flex-direction: column;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
+  gap: 0.5em;
   align-items: center;
-  gap: 0.6em;
+  justify-content: flex-start;
+  scrollbar-width: none;
   height: 100%;
 }
 
 .tab-separator {
   width: 70%;
   height: 1px;
+  border-radius: 50px;
   background-color: var(--color-accent);
   opacity: 0.3;
   margin: 0.5em 0;
@@ -151,7 +157,7 @@ const toggleTab = (tabName) => {
   margin-left: -2em;
   padding: 15px;
   padding-left: 2.5em;
-  width: 50em;
+  width: 50vw;
   height: 100%;
   background: var(--color-bg-secondary);
   border-radius: 12px;
@@ -200,4 +206,11 @@ const toggleTab = (tabName) => {
   margin-top: auto;
   margin-bottom: .5em;
 }
+
+@media (max-width: 800px) {
+  .panel-content {
+    width: 90vw;
+  }
+}
+
 </style>
