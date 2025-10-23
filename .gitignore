@@ -474,6 +474,7 @@ composer.lock
 
 ##### Vue project
 *node_modules
+.vite
 
 ##### Editor configs
 *.vscode/
