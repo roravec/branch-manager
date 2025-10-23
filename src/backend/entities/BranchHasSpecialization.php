@@ -27,7 +27,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
             $this->branchId,
             $this->branchSpecializationId
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -67,7 +67,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
             $this->branchId,
             $this->branchSpecializationId
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
@@ -82,7 +82,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
             $this->branchId,
             $this->branchSpecializationId
         ];
-        $result = $this->database->query($query, $params);
+        $result = $this->database->execute($query, $params);
         return $result !== false;
     }
 
