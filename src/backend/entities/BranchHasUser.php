@@ -87,6 +87,33 @@ class BranchHasUser extends BaseEntity implements ICrud
         return $result !== false;
     }
 
+    public function exists(): bool
+    {
+        return $this->branchId > 0 && $this->userId > 0;
+    }
+
+    public static function readAll(Database $database, string $sqlpostfix = ""): array
+    {
+        $query = '
+        SELECT * FROM '.self::$TABLE_NAME.'
+        '.$sqlpostfix.';
+        ';
+        $result = $database->query($query);
+        $entities = [];
+        if ($result && count($result) > 0)
+        {
+            foreach ($result as $row)
+            {
+                $entity = new BranchHasUser($database);
+                $entity->branchId = $row['branchId'];
+                $entity->userId = $row['userId'];
+                $entity->userRights = $row['userRights'];
+                $entities[] = $entity;
+            }
+        }
+        return $entities;
+    }
+
 	/** Database columns  *******************/
     public $branchId=0; // PRIMARY KEY
     public $userId=0;   // PRIMARY KEY

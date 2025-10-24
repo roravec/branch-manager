@@ -86,6 +86,30 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
         return $result !== false;
     }
 
+    public function exists(): bool
+    {
+        return $this->branchId > 0 && $this->branchSpecializationId > 0;
+    }
+
+    public static function readAll(Database $database, string $sqlpostfix = ""): array
+    {
+        $query = '
+        SELECT * FROM '.self::$TABLE_NAME.'
+        '.$sqlpostfix.';
+        ';
+        $params = [];
+        $results = $database->query($query, $params);
+        $entities = [];
+        foreach ($results as $result)
+        {
+            $entity = new BranchHasSpecialization($database);
+            $entity->branchId = $result['branchId'];
+            $entity->branchSpecializationId = $result['branchSpecializationId'];
+            $entities[] = $entity;
+        }
+        return $entities;
+    }
+
 	/** Database columns  *******************/
     public $branchId=0; // PRIMARY KEY
     public $branchSpecializationId=0; // PRIMARY KEY
