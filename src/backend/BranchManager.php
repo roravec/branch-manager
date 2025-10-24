@@ -124,7 +124,7 @@ class BranchManager implements IWebApp
             http_response_code(400);
             return json_encode(['error' => 'Client with this identifier already exists']);
         }
-        //$client->create();
+        $client->create();
         $client->secret_hash = '';
         return json_encode($client);
     }
