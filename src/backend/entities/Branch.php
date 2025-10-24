@@ -111,10 +111,16 @@ class Branch extends BaseEntity implements ICrud
         return $result !== false;
     }
 
-    public static function readAll($database): array
+    public function exists(): bool
+    {
+        return $this->name != "" && $this->id > 0;
+    }
+
+    public static function readAll($database, string $sqlpostfix = ""): array
     {
         $query = '
-        SELECT * FROM '.$database->getPrefix().self::$TABLE_NAME.';
+        SELECT * FROM '.$database->getPrefix().self::$TABLE_NAME.'
+        '.$sqlpostfix.';
         ';
         $result = $database->query($query);
         $branches = [];
