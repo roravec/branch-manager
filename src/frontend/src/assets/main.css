@@ -130,3 +130,29 @@ input {
   color: var(--color-text);
   border-radius: 8px;
 }
+
+select {
+  padding: 10px;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+select:hover {
+  border-color: var(--color-accent-hover);
+  background: var(--color-bg);
+  color: var(--color-heading);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--color-accent-hover);
+}
+
+option {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+}
