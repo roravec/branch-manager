@@ -1,19 +1,41 @@
 <script setup>
 import { ref } from "vue"
+import axios from "axios"
 
 const username = ref("")
 const password = ref("")
 
 const emit = defineEmits(["loggedIn"])
 
-function login() {
-    if (username.value && password.value) {
-        emit("loggedIn")
-    } else {
+async function login() {
+    if (!username.value || !password.value) {
         alert("Zadajte meno a heslo!")
+        return
+    }
+
+    try {
+        const formData = new FormData()
+        formData.append("identifier", username.value)
+        formData.append("secret", password.value)
+        formData.append("storeLogin", 1)
+
+        const response = await axios.post("/api/login", formData)
+        const { access_token, refresh_token, error } = response.data
+        console.log(response.data)
+        if (error || !access_token) {
+            alert("Prihlásenie zlyhalo. Skontrolujte meno a heslo.")
+            return
+        }
+
+        emit("loggedIn", { access_token, refresh_token })
+    } catch (error) {
+        console.error(error)
+        alert("Prihlásenie zlyhalo.")
     }
 }
+
 </script>
+
 
 <template>
     <div class="login-page">
