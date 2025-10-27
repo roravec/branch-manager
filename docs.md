@@ -119,3 +119,72 @@ Old refresh token is revoked and cannot be used for another refreshing of access
 You have to use a newly generated refresh token for another access token refresh.
 
 After “refresh token“ expires then you have to make a new login.
+
+
+# Endpoints
+
+## GET
+
+| Endpoint                     | Description                                            | Required Rights |
+| ---------------------------- | ------------------------------------------------------ | --------------- |
+| `/user/{id}`                 | Get a single user by ID                                | Viewer          |
+| `/users`                     | Get all users                                          | Viewer          |
+| `/branch/{id}`               | Get branch details by ID                               | Viewer          |
+| `/branches`                  | Get all branches                                       | Viewer          |
+| `/branchspec/{id}`           | Get a branch specialization by ID                      | Viewer          |
+| `/branchspecs`               | Get all branch specializations                         | Viewer          |
+| `/log/{id}`                  | Get a log entry by ID                                  | Viewer          |
+| `/logs`                      | Get all log entries                                    | Viewer          |
+| `/branchHasUser/{id}`        | Get a branch-user assignment                           | Viewer          |
+| `/branchHasUsers/{branchId}` | Get all users assigned to a branch                     | Viewer          |
+| `/branchHasSpec/{branchId}`  | Get specializations assigned to a branch               | Viewer          |
+| `/branchHasSpecs/{branchId}` | Get all branch-specialization assignments for a branch | Viewer          |
+---
+
+## POST
+
+| Endpoint         | Description                         | Required Rights | Parameters                                                                              |
+| ---------------- | ----------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| `/user`          | Create a new user                   | **Admin**       | `identifier`, `name`, `secret`                                                          |
+| `/branch`        | Create a new branch                 | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
+| `/branchspec`    | Create a new branch specialization  | **Manager**     | `name`, `description`                                                                   |
+| `/log`           | Create a new log entry              | **Editor**      | `branchId`, `userId`, `action`                                                          |
+| `/branchHasUser` | Assign a user to a branch           | **Manager**     | `branchId`, `userId`                                                                    |
+| `/branchHasSpec` | Assign a specialization to a branch | **Manager**     | `branchId`, `specId`                                                                    |
+| `/register`      | Register a new client               | None            | `identifier`, `name`, `secret`                                                          |
+| `/login`         | Login client (returns tokens)       | None            | `identifier`, `secret`, `[storeLogin]`                                                  |
+| `/logout`        | Logout client                       | Logged-in user  | —                                                                                       |
+| `/authrefresh`   | Refresh authentication tokens       | Logged-in user  | —                                                                                       |
+---
+
+### Response example (for /login and /authrefresh):
+{
+  "client_id": 1,
+  "access_token": "xxxxx",
+  "refresh_token": "yyyyy",
+  "expires_in": 3600
+}
+
+## PUT
+
+| Endpoint              | Description                             | Required Rights | Parameters                                                                              |
+| --------------------- | --------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| `/user/{id}`          | Update an existing user                 | **Admin**       | `name`, `identifier`, `secret_hash`, `rights`, `status`, `type`                         |
+| `/branch/{id}`        | Update branch details                   | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
+| `/branchspec/{id}`    | Update a branch specialization          | **Manager**     | `name`, `description`                                                                   |
+| `/log/{id}`           | Update a log entry                      | **Editor**      | `message`                                                                               |
+| `/branchHasUser/{id}` | Update branch-user assignment           | **Manager**     | `branchId`, `userId`, `userRights`                                                      |
+| `/branchHasSpec/{id}` | Update branch-specialization assignment | **Manager**     | `branchId`, `branchSpecializationId`                                                    |
+---
+
+## DELETE
+
+| Endpoint              | Description                             | Required Rights |
+| --------------------- | --------------------------------------- | --------------- |
+| `/user/{id}`          | Delete a user                           | **Admin**       |
+| `/branch/{id}`        | Delete a branch                         | **Admin**       |
+| `/branchspec/{id}`    | Delete a branch specialization          | **Admin**       |
+| `/log/{id}`           | Delete a log entry                      | **Editor**      |
+| `/branchHasUser/{id}` | Delete branch-user assignment           | **Admin**       |
+| `/branchHasSpec/{id}` | Delete branch-specialization assignment | **Admin**       |
+---
