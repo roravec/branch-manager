@@ -188,3 +188,24 @@ After “refresh token“ expires then you have to make a new login.
 | `/branchHasUser/{id}` | Delete branch-user assignment           | **Admin**       |
 | `/branchHasSpec/{id}` | Delete branch-specialization assignment | **Admin**       |
 ---
+
+## Example Usage
+
+### Create a Branch
+
+```
+POST /branch
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {access_token}
+
+name=Main%20Office&address=123%20Main%20St
+```
+
+Response:
+```
+{
+  "id": 5,
+  "name": "Main Office",
+  "address": "123 Main St"
+}
+```
