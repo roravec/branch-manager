@@ -2,6 +2,8 @@
 import { ref } from "vue"
 import axios from "axios"
 
+console.log("VITE_API_BASE:", import.meta.env.VITE_API_BASE)
+
 const username = ref("")
 const password = ref("")
 
@@ -19,15 +21,15 @@ async function login() {
         formData.append("secret", password.value)
         formData.append("storeLogin", 1)
 
-        const response = await axios.post("https://bmapi.erma.sk/login", formData)
-        const { access_token, refresh_token, error } = response.data
+        const response = await axios.post(import.meta.env.VITE_API_BASE + "/login", formData);
+        const { client_id, access_token, refresh_token, error } = response.data
         console.log(response.data)
         if (error || !access_token) {
             alert("Prihlásenie zlyhalo. Skontrolujte meno a heslo.")
             return
         }
 
-        emit("loggedIn", { access_token, refresh_token })
+        emit("loggedIn", { client_id, access_token, refresh_token })
     } catch (error) {
         console.error(error)
         alert("Prihlásenie zlyhalo.")
