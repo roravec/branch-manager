@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vue-build
-          path: src/frontend/dist/
+          path: src/frontend/dist/**
           
   deploy:
     runs-on: ubuntu-latest
@@ -73,7 +73,15 @@ jobs:
         run: |
           mkdir -p src/frontend/dist
           rm -rf src/frontend/dist/*
-          mv vue-build-temp/src/frontend/dist/* src/frontend/dist/ || { echo "Source path not found, listing vue-build-temp:"; ls -R vue-build-temp; exit 1; }
+          shopt -s dotglob
+          if [ -n "$(ls -A vue-build-temp 2>/dev/null || true)" ]; then
+            cp -a vue-build-temp/* src/frontend/dist/
+            ls -l src/frontend/dist
+          else
+            ls -R vue-build-temp || true
+            exit 1
+          fi
+
           
       - name: Upload submodule files - API root application
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
