@@ -19,7 +19,7 @@ async function login() {
         formData.append("secret", password.value)
         formData.append("storeLogin", 1)
 
-        const response = await axios.post("/api/login", formData)
+        const response = await axios.post("https://bmapi.erma.sk/login", formData)
         const { access_token, refresh_token, error } = response.data
         console.log(response.data)
         if (error || !access_token) {
