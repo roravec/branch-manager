@@ -13,6 +13,10 @@ class Rights {
 class BranchManager implements IWebApp
 {
     protected $rootApp;
+    function __construct()
+    {
+        header("Access-Control-Allow-Origin: https://branchmanager.erma.sk");
+    }
     function requireRights(int $requiredLevel, int $userLevel): void
     {
         if ($userLevel < $requiredLevel)
