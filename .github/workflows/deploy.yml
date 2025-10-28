@@ -71,8 +71,9 @@ jobs:
 
       - name: Move build files to dist
         run: |
-            rm -rf src/frontend/dist/*
-            mv vue-build-temp/* src/frontend/dist/
+          mkdir -p src/frontend/dist
+          rm -rf src/frontend/dist/*
+          mv vue-build-temp/src/frontend/dist/* src/frontend/dist/ || { echo "Source path not found, listing vue-build-temp:"; ls -R vue-build-temp; exit 1; }
           
       - name: Upload submodule files - API root application
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
