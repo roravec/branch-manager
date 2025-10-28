@@ -159,7 +159,7 @@ class BranchManager implements IWebApp
         // send access token and refresh token in response
         if ($this->rootApp->getClientAuth()->isLoggedIn()) {
             return json_encode([
-                'client_id' => $this->rootApp->getClientAuth()->getId(),
+                'client_id' => $this->rootApp->getClientAuth()->getClient()->getId(),
                 'access_token' => $this->rootApp->getClientAuth()->getAccessToken(),
                 'refresh_token' => $this->rootApp->getClientAuth()->getRefreshToken(),
                 'expires_in' => 3600
@@ -179,7 +179,7 @@ class BranchManager implements IWebApp
         $this->rootApp->getClientAuth()->refresh();
         if ($this->rootApp->getClientAuth()->isLoggedIn()) {
             return json_encode([
-                'client_id' => $this->rootApp->getClientAuth()->getId(),
+                'client_id' => $this->rootApp->getClientAuth()->getClient()->getId(),
                 'access_token' => $this->rootApp->getClientAuth()->getAccessToken(),
                 'refresh_token' => $this->rootApp->getClientAuth()->getRefreshToken(),
                 'expires_in' => 3600
