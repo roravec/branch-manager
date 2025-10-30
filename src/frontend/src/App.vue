@@ -3,20 +3,32 @@ import { ref } from "vue"
 import LoginPage from "./components/LogIn.vue"
 import Map from './components/Map.vue'
 import ControlPanel from './components/ControlPanel/ControlPanel.vue'
+import { useUserStore } from '@/stores/user'
+import api from '@/api.js'
+
+const userStore = useUserStore();
+userStore.restore();
 
 const loggedIn = ref(!!sessionStorage.getItem('access_token'))
 
-function handleLogin({ client_id, access_token, refresh_token }) {
-    sessionStorage.setItem('client_id', client_id)
-    sessionStorage.setItem('access_token', access_token)
-    sessionStorage.setItem('refresh_token', refresh_token)
+async function handleLogin({ client_id, access_token, refresh_token }) {
+    userStore.setAccessToken(access_token);
+    userStore.setRefreshToken(refresh_token);
+
+    try {
+        const res = await api.get(`/user/${client_id}`)
+        userStore.setUser({ ...res.data, access_token, refresh_token })
+    } catch (err) {
+        console.error('Nepodarilo sa načítať údaje používateľa', err)
+        loggedIn.value = false
+        userStore.clear();
+    }
+
     loggedIn.value = true
 }
 
 function logout() {
-    sessionStorage.removeItem('client_id')
-    sessionStorage.removeItem('access_token')
-    sessionStorage.removeItem('refresh_token')
+    userStore.clear()
     loggedIn.value = false
 }
 </script>
