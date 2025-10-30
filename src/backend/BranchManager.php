@@ -16,13 +16,14 @@ class BranchManager implements IWebApp
     function __construct()
     {
         header("Access-Control-Allow-Origin: https://branchmanager.erma.sk");
+        //echo "DATA: " . json_encode($_POST)."\n";
     }
     function requireRights(int $requiredLevel, int $userLevel): void
     {
         if ($userLevel < $requiredLevel)
         {
             http_response_code(403);
-            echo json_encode(['error' => 'Insufficient rights']);
+            echo json_encode(['error' => "Insufficient rights."]);
             exit;
         }
     }
@@ -85,16 +86,18 @@ class BranchManager implements IWebApp
                 return $this->authRefresh();
             case 'register':
                 return $this->registerClient();
+            case 'edit':
+                return $this->putPost($rootApplication);
             default:
                 return "Unknown POST endpoint.";
         }
     }
 
-    public function put($rootApplication): string
+    public function putPost($rootApplication): string
     {
         $this->rootApp = $rootApplication;
-        $id = $rootApplication->getUriSegment(1);
-        switch ($rootApplication->getUriSegment(0)) {
+        $id = $rootApplication->getUriSegment(2);
+        switch ($rootApplication->getUriSegment(1)) {
             case 'user':
                 return $this->editUser($id);
             case 'branch':
@@ -110,6 +113,11 @@ class BranchManager implements IWebApp
             default:
                 return "Unknown PUT endpoint.";
         }
+    }
+
+    public function put($rootApplication): string
+    {
+        return '';
     }
 
     public function delete($rootApplication): string
@@ -369,6 +377,7 @@ class BranchManager implements IWebApp
     /* PUT methods */
     public function editUser($id): string
     {
+        //return json_encode(['message' => $this->rootApp->getClientAuth()->getClient()->getIdentifier() . " is logged in: " . ($this->rootApp->getClientAuth()->isLoggedIn() ? 'yes' : 'no')]);
         $this->requireRights(Rights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
         // edit user by id
         $user = new Client($this->rootApp->getDatabase());
