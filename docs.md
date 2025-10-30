@@ -165,16 +165,16 @@ After “refresh token“ expires then you have to make a new login.
   "expires_in": 3600
 }
 
-## PUT
+## PUT - use POST instead due to server limitation
 
-| Endpoint              | Description                             | Required Rights | Parameters                                                                              |
-| --------------------- | --------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
-| `/user/{id}`          | Update an existing user                 | **Admin**       | `name`, `identifier`, `secret_hash`, `rights`, `status`, `type`                         |
-| `/branch/{id}`        | Update branch details                   | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
-| `/branchspec/{id}`    | Update a branch specialization          | **Manager**     | `name`, `description`                                                                   |
-| `/log/{id}`           | Update a log entry                      | **Editor**      | `message`                                                                               |
-| `/branchHasUser/{id}` | Update branch-user assignment           | **Manager**     | `branchId`, `userId`, `userRights`                                                      |
-| `/branchHasSpec/{id}` | Update branch-specialization assignment | **Manager**     | `branchId`, `branchSpecializationId`                                                    |
+| Endpoint                   | Description                             | Required Rights | Parameters                                                                              |
+| -------------------------- | --------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| `/edit/user/{id}`          | Update an existing user                 | **Admin**       | `name`, `identifier`, `secret_hash`, `rights`, `status`, `type`                         |
+| `/edit/branch/{id}`        | Update branch details                   | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
+| `/edit/branchspec/{id}`    | Update a branch specialization          | **Manager**     | `name`, `description`                                                                   |
+| `/edit/log/{id}`           | Update a log entry                      | **Editor**      | `message`                                                                               |
+| `/edit/branchHasUser/{id}` | Update branch-user assignment           | **Manager**     | `branchId`, `userId`, `userRights`                                                      |
+| `/edit/branchHasSpec/{id}` | Update branch-specialization assignment | **Manager**     | `branchId`, `branchSpecializationId`                                                    |
 ---
 
 ## DELETE
