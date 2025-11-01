@@ -27,9 +27,17 @@ async function handleLogin({ client_id, access_token, refresh_token }) {
     loggedIn.value = true
 }
 
-function logout() {
-    userStore.clear()
-    loggedIn.value = false
+async function logout() {
+    try {
+        await api.post(`/logout`);
+
+        userStore.clear();
+        userStore.clearTokens();
+        loggedIn.value = false;
+    } catch (err) {
+        console.error(err);
+        alert('Chyba pri odhlasovaní!');
+    }
 }
 </script>
 
