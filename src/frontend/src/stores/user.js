@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -12,6 +14,8 @@ export const useUserStore = defineStore("user", {
     created_at: null,
     access_token: null,
     refresh_token: null,
+    token_expiry: null,
+    refreshTimer: null,
   }),
 
   getters: {
@@ -51,11 +55,50 @@ export const useUserStore = defineStore("user", {
     setAccessToken(access_token) {
       this.access_token = access_token;
       sessionStorage.setItem("access_token", access_token);
+
+      try {
+        const decoded = jwtDecode(access_token);
+        this.token_expiry = decoded.exp * 1000;
+        this.scheduleTokenRefresh();
+        console.log("Expire Time in ms", token_expiry)
+      } catch (e) {
+        console.error("Invalid token format:", e);
+      }
     },
 
     setRefreshToken(refresh_token) {
       this.refresh_token = refresh_token;
       sessionStorage.setItem("refresh_token", refresh_token);
+    },
+
+    async refreshAccessToken() {
+      if (!this.refresh_token) return;
+
+      try {
+        const res = await axios.post(import.meta.env.VITE_API_BASE + "/authrefresh", null, {
+          headers: { "X-Refresh-Token": this.refresh_token },
+        });
+
+        this.setAccessToken(res.data.access_token);
+        this.setRefreshToken(res.data.refresh_token);
+        console.log("Access token refreshed automatically");
+      } catch (err) {
+        console.error("Token refresh failed:", err);
+        this.logout();
+      }
+    },
+
+    scheduleTokenRefresh() {
+      if (this.refreshTimer) clearTimeout(this.refreshTimer);
+
+      const now = Date.now();
+      const refreshIn = this.token_expiry - now - 60_000;
+
+      if (refreshIn > 0) {
+        this.refreshTimer = setTimeout(() => {
+          this.refreshAccessToken();
+        }, refreshIn);
+      }
     },
 
     restore() {
@@ -74,6 +117,7 @@ export const useUserStore = defineStore("user", {
     clear() {
       this.$reset();
       sessionStorage.removeItem("user");
+      clearTimeout(this.refreshTimer);
     },
 
     clearTokens() {
@@ -81,6 +125,7 @@ export const useUserStore = defineStore("user", {
       this.refresh_token = null;
       sessionStorage.removeItem("access_token");
       sessionStorage.removeItem("refresh_token");
+      clearTimeout(this.refreshTimer);
     },
   },
 });
