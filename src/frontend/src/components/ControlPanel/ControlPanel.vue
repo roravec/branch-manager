@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 import FilterDistrict from './FilterDistrict.vue'
 import FilterIndustry from './FilterIndustry.vue'
@@ -23,6 +24,9 @@ import LogsIcon from '../../assets/icons/ControlPanel/archive.svg'
 import SettingsIcon from '../../assets/icons/ControlPanel/settings.svg'
 
 import LogOutButton from '../../assets/icons/ControlPanel/logout.svg'
+
+
+const userStore = useUserStore();
 
 //dummy data
 const mockBranch = { name: "Pobočka Bratislava", staff: [{ name: "Jozef" }], resources: [{ type: "Printer", count: 2 }] }
@@ -85,7 +89,7 @@ const toggleTab = (tabName) => {
 
         <div class="tab-separator"></div>
 
-        <button v-for="tab in dataTabs" :key="tab.name" :class="{ active: activeTab === tab.name }"
+        <button v-if="userStore.isLoggedIn" v-for="tab in dataTabs" :key="tab.name" :class="{ active: activeTab === tab.name }"
           @click="toggleTab(tab.name)">
           <component :is="tab.icon" class="icon" />
         </button>

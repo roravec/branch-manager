@@ -12,22 +12,40 @@ userStore.restore();
 const loggedIn = ref(!!sessionStorage.getItem('access_token'))
 
 async function handleLogin({ client_id, access_token, refresh_token }) {
-    userStore.setAccessToken(access_token);
-    userStore.setRefreshToken(refresh_token);
+    if (access_token && client_id) {
+        userStore.setAccessToken(access_token)
+        userStore.setRefreshToken(refresh_token)
 
-    try {
-        const res = await api.get(`/user/${client_id}`)
-        userStore.setUser({ ...res.data, access_token, refresh_token })
-    } catch (err) {
-        console.error('Nepodarilo sa načítať údaje používateľa', err)
-        loggedIn.value = false
-        userStore.clear();
+        try {
+            const res = await api.get(`/user/${client_id}`)
+            userStore.setUser({ ...res.data, access_token, refresh_token })
+        } catch (err) {
+            console.error('Nepodarilo sa načítať údaje používateľa', err)
+            loggedIn.value = false
+            userStore.clear()
+            return
+        }
+    } else {
+        userStore.setUser({
+            client_id: null,
+            access_token: null,
+            refresh_token: null,
+            name: 'Hosť',
+            rights: 0,
+            status: null,
+            type: null
+        })
     }
 
-    loggedIn.value = true
+    loggedIn.value = true;
 }
 
 async function logout() {
+    if (!userStore.access_token) {
+        loggedIn.value = false;
+        return;
+    }
+
     try {
         await api.post(`/logout`);
 

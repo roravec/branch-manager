@@ -60,7 +60,6 @@ export const useUserStore = defineStore("user", {
         const decoded = jwtDecode(access_token);
         this.token_expiry = decoded.exp * 1000;
         this.scheduleTokenRefresh();
-        console.log("Expire Time in ms", token_expiry)
       } catch (e) {
         console.error("Invalid token format:", e);
       }

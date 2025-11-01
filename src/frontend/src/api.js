@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useUserStore } from "@/stores/user";
 
-console.log("API BASE:", import.meta.env.VITE_API_BASE);
-
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,
 });
@@ -14,7 +12,6 @@ api.interceptors.request.use((config) => {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
-  console.log("Authorization header:", config.headers["Authorization"]);
   return config;
 });
 

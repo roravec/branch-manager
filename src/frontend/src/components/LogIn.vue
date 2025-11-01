@@ -2,8 +2,6 @@
 import { ref } from "vue"
 import axios from "axios"
 
-console.log("VITE_API_BASE:", import.meta.env.VITE_API_BASE)
-
 const username = ref("")
 const password = ref("")
 
@@ -23,7 +21,6 @@ async function login() {
 
         const response = await axios.post(import.meta.env.VITE_API_BASE + "/login", formData);
         const { client_id, access_token, refresh_token, error } = response.data
-        console.log(response.data)
         if (error || !access_token) {
             alert("Prihlásenie zlyhalo. Skontrolujte meno a heslo.")
             return
@@ -36,6 +33,10 @@ async function login() {
     }
 }
 
+function continueAsGuest() {
+    emit("loggedIn", { client_id: null, access_token: null, refresh_token: null });
+}
+
 </script>
 
 
@@ -46,6 +47,7 @@ async function login() {
             <input type="text" placeholder="Meno" v-model="username" />
             <input type="password" placeholder="Heslo" v-model="password" />
             <button class="btn" @click="login">Prihlásiť sa</button>
+            <button class="btn"@click="continueAsGuest">Pokračovať bez prihlásenia</button>
         </div>
     </div>
 </template>
