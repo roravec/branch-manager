@@ -1,13 +1,16 @@
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted} from "vue"
 import LoginPage from "./components/LogIn.vue"
 import Map from './components/Map.vue'
 import ControlPanel from './components/ControlPanel/ControlPanel.vue'
 import { useUserStore } from '@/stores/user'
+import { useBranchStore } from '@/stores/branches'
 import api from '@/api.js'
 
 const userStore = useUserStore();
 userStore.restore();
+
+const branchStore = useBranchStore();
 
 const loggedIn = ref(!!sessionStorage.getItem('access_token'))
 
@@ -57,6 +60,11 @@ async function logout() {
         alert('Chyba pri odhlasovaní!');
     }
 }
+
+onMounted(() => {
+  branchStore.loadBranches();
+})
+
 </script>
 
 <template>

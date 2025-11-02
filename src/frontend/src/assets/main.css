@@ -43,6 +43,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -129,6 +130,7 @@ input {
   background: var(--color-bg-secondary);
   color: var(--color-text);
   border-radius: 8px;
+  width: 100%;
 }
 
 select {
@@ -155,4 +157,10 @@ select:focus {
 option {
   background: var(--color-bg-secondary);
   color: var(--color-text);
+}
+
+.select-create-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }
