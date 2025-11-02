@@ -83,7 +83,6 @@ export const useUserStore = defineStore("user", {
         console.log("Access token refreshed automatically");
       } catch (err) {
         console.error("Token refresh failed:", err);
-        this.logout();
       }
     },
 
