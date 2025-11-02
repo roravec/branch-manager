@@ -52,7 +52,7 @@ async function saveUser() {
 
     const index = users.value.findIndex(u => u.id === editableUser.value.id);
     if (index !== -1) users.value[index] = { ...res.data };
-
+    selectedId.value = res.data.id ;
   } catch (err) {
     console.error(err);
     alert('Chyba pri ukladaní používateľa!');
@@ -126,10 +126,11 @@ const props = defineProps({
 
 <template>
   <div>
-    <h2 v-if="userStore.isAdmin">Používatelia</h2>
+    <h2 v-if="registeringNewUser">Nový používateľ</h2>
+    <h2 v-else-if="userStore.isAdmin">Používatelia</h2>
     <h2 v-else>Používateľ</h2>
 
-    <div v-if="!registeringNewUser" class="user-select-row">
+    <div v-if="!registeringNewUser" class="select-create-row">
       <select v-model="selectedId" class="dropdown" :disabled="!userStore.isAdmin">
         <option disabled value="">-- Vyber používateľa --</option>
         <option v-for="u in visibleUsers" :key="u.id" :value="u.id">
@@ -137,47 +138,49 @@ const props = defineProps({
         </option>
       </select>
 
-      <button v-if="userStore.isAdmin" @click="startCreating" class="btn create-btn">
-        ➕ Nový používateľ
+      <button v-if="userStore.isAdmin" @click="startCreating" class="btn">
+        ➕
       </button>
     </div>
 
     <div v-if="selectedUser || registeringNewUser">
-      <table class="user-table">
-        <tr>
-          <th>Používateľské meno</th>
-          <td><input v-model="editableUser.identifier" :readonly="!userStore.isAdmin" /></td>
-        </tr>
-        <tr>
-          <th>Meno</th>
-          <td><input v-model="editableUser.name" :readonly="!userStore.isAdmin" /></td>
-        </tr>
-        <tr v-if="registeringNewUser">
-          <th>Heslo</th>
-          <td><input type="password" v-model="editableUser.secret" /></td>
-        </tr>
-        <tr v-if="!registeringNewUser">
-          <th>Oprávnenia</th>
-          <td><input v-model.number="editableUser.rights" inputmode="numeric" type="number"
-              :readonly="!userStore.isAdmin" /></td>
-        </tr>
-        <tr v-if="!registeringNewUser">
-          <th>Rola</th>
-          <td><input v-model.number="editableUser.type" inputmode="numeric" type="number"
-              :readonly="!userStore.isAdmin" /></td>
-        </tr>
-        <tr v-if="!registeringNewUser">
-          <th>Status</th>
-          <td>{{ editableUser.status }}</td>
-        </tr>
-        <tr v-if="!registeringNewUser">
-          <th>Naposledy online</th>
-          <td>{{ editableUser.last_seen }}</td>
-        </tr>
-        <tr v-if="!registeringNewUser">
-          <th>Vytvorený</th>
-          <td>{{ editableUser.created_at }}</td>
-        </tr>
+      <table>
+        <tbody>
+          <tr>
+            <th>Používateľské meno</th>
+            <td><input v-model="editableUser.identifier" :readonly="!userStore.isAdmin" /></td>
+          </tr>
+          <tr>
+            <th>Meno</th>
+            <td><input v-model="editableUser.name" :readonly="!userStore.isAdmin" /></td>
+          </tr>
+          <tr v-if="registeringNewUser">
+            <th>Heslo</th>
+            <td><input type="password" v-model="editableUser.secret" /></td>
+          </tr>
+          <tr v-if="!registeringNewUser">
+            <th>Oprávnenia</th>
+            <td><input v-model.number="editableUser.rights" inputmode="numeric" type="number"
+                :readonly="!userStore.isAdmin" /></td>
+          </tr>
+          <tr v-if="!registeringNewUser">
+            <th>Rola</th>
+            <td><input v-model.number="editableUser.type" inputmode="numeric" type="number"
+                :readonly="!userStore.isAdmin" /></td>
+          </tr>
+          <tr v-if="!registeringNewUser">
+            <th>Status</th>
+            <td>{{ editableUser.status }}</td>
+          </tr>
+          <tr v-if="!registeringNewUser">
+            <th>Naposledy online</th>
+            <td>{{ editableUser.last_seen }}</td>
+          </tr>
+          <tr v-if="!registeringNewUser">
+            <th>Vytvorený</th>
+            <td>{{ editableUser.created_at }}</td>
+          </tr>
+        </tbody>
       </table>
       <br>
       <div v-if="userStore.isAdmin">
@@ -200,17 +203,7 @@ const props = defineProps({
   margin-right: 0.5em;
 }
 
-.user-select-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
 .dropdown {
   flex: 1;
-}
-
-.create-btn {
-  white-space: nowrap;
 }
 </style>
