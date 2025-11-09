@@ -10,7 +10,7 @@ const branchStore = useBranchStore()
 const mapRef = ref(null);
 const center = ref([48.669, 19.699]);
 
-const branches = computed(() => branchStore.branches);
+const branches = computed(() => branchStore.filteredBranches);
 
 function parseLatLng(coords) {
   if (!coords) return [48.669, 19.699]
