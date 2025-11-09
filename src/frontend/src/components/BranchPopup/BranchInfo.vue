@@ -10,16 +10,12 @@ defineProps({
 <template>
     <div>
         <div class="header">{{ branch.name }}</div>
-        <div class="industry">{{ branch.industry }}</div>
+        <div class="industry">{{ branch.utilization }}</div>
         <div>{{ branch.address }}</div>
-        <div><b>Otvorené:</b> {{ branch.hours }}</div>
-        <div><b>Zamestnanci:</b> {{ branch.staff.length }}</div>
-        <div>{{ branch.note }}</div>
+        <div><b>Zamestnanci:</b> {{ branch.employees }}</div>
+        <div>{{ branch.description }}</div>
         <div v-if="branch.website">
             🌐 <a :href="branch.website" target="_blank">{{ branch.website }}</a>
-        </div>
-        <div v-if="branch.phone">
-            📞 {{ branch.phone }}
         </div>
     </div>
 </template>
