@@ -91,7 +91,7 @@ class BranchSpecialization extends BaseEntity implements ICrud
     public static function readAll(Database $database, string $sqlpostfix = ""): array
     {
         $query = '
-        SELECT * FROM '.self::$TABLE_NAME.'
+        SELECT * FROM '.$database->getPrefix().self::$TABLE_NAME.'
         '.$sqlpostfix.';
         ';
         $results = $database->query($query);
