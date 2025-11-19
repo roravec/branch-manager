@@ -33,18 +33,19 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
 
     public function read($id=0): bool
     {
+        $this->id = $id > 0 ? $id : $this->id;
         $query = '
         SELECT * FROM '.$this->getTableName().'
         WHERE
-            branchId = ? AND branchSpecializationId = ?;
+            id = ?;
         ';
         $params = [
-            $this->branchId,
-            $this->branchSpecializationId
+            $this->id
         ];
         $result = $this->database->query($query, $params);
         if ($result && count($result) > 0)
         {
+            $this->id = $result[0]['id'];
             $this->branchId = $result[0]['branchId'];
             $this->branchSpecializationId = $result[0]['branchSpecializationId'];
             return true;
@@ -59,13 +60,12 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
         SET
             branchId = ?, branchSpecializationId = ?
         WHERE
-            branchId = ? AND branchSpecializationId = ?;
+            id = ?;
         ';
         $params = [
             $this->branchId,
             $this->branchSpecializationId,
-            $this->branchId,
-            $this->branchSpecializationId
+            $this->id
         ];
         $result = $this->database->execute($query, $params);
         return $result !== false;
@@ -73,14 +73,14 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
 
     public function delete($id = 0): bool
     {
+        $this->id = $id > 0 ? $id : $this->id;
         $query = '
         DELETE FROM '.$this->getTableName().'
         WHERE
-            branchId = ? AND branchSpecializationId = ?;
+            id = ?;
         ';
         $params = [
-            $this->branchId,
-            $this->branchSpecializationId
+            $this->id
         ];
         $result = $this->database->execute($query, $params);
         return $result !== false;
@@ -94,7 +94,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
     public static function readAll(Database $database, string $sqlpostfix = ""): array
     {
         $query = '
-        SELECT * FROM '.self::$TABLE_NAME.'
+        SELECT * FROM '.$database->getPrefix().self::$TABLE_NAME.'
         '.$sqlpostfix.';
         ';
         $params = [];
@@ -103,6 +103,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
         foreach ($results as $result)
         {
             $entity = new BranchHasSpecialization($database);
+            $entity->id = $result['id'];
             $entity->branchId = $result['branchId'];
             $entity->branchSpecializationId = $result['branchSpecializationId'];
             $entities[] = $entity;
@@ -111,8 +112,9 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
     }
 
 	/** Database columns  *******************/
-    public $branchId=0; // PRIMARY KEY
-    public $branchSpecializationId=0; // PRIMARY KEY
+    public $id=0;
+    public $branchId=0; 
+    public $branchSpecializationId=0; 
     /** Database columns section ends ********/
 }
 

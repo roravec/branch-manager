@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../../interfaces/IWebApp.php';
 require_once __DIR__ . '/entities/Branch.php';
+require_once __DIR__ . '/entities/BranchHasUser.php';
+require_once __DIR__ . '/entities/BranchHasSpecialization.php';
+require_once __DIR__ . '/entities/BranchSpecialization.php';
 
 class Rights {
     const NONE = 0;
@@ -171,6 +174,7 @@ class BranchManager implements IWebApp
         }
         $client->create();
         $client->secret_hash = '';
+        $client->id = $this->rootApp->getDatabase()->lastInsertID();
         return json_encode($client);
     }
 
