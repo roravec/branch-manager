@@ -1,10 +1,17 @@
 <script setup>
+
 defineProps({
     staff: {
         type: Array,
         required: true
     }
 })
+
+const ROLE_LABELS = {
+    0: "Zamestnanec",
+    3: "Manažér"
+}
+
 </script>
 
 <template>
@@ -16,9 +23,9 @@ defineProps({
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(emp, i) in staff" :key="i">
-                <td>{{ emp.name }}</td>
-                <td>{{ emp.position }}</td>
+            <tr v-for="emp in staff" :key="emp.id">
+                <td>{{ emp.user.name }}</td>
+                <td>{{ ROLE_LABELS[emp.userRights] }}</td>
             </tr>
         </tbody>
     </table>
