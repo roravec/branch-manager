@@ -4,6 +4,7 @@ import LoginPage from "./components/LogIn.vue"
 import Map from './components/Map.vue'
 import ControlPanel from './components/ControlPanel/ControlPanel.vue'
 import { useUserStore } from '@/stores/user'
+import { useUsersStore } from "@/stores/users"
 import { useBranchStore } from '@/stores/branches'
 import api from '@/api.js'
 
@@ -11,6 +12,7 @@ const userStore = useUserStore();
 userStore.restore();
 
 const branchStore = useBranchStore();
+const usersStore = useUsersStore();
 
 const loggedIn = ref(!!sessionStorage.getItem('access_token'))
 
@@ -40,6 +42,7 @@ async function handleLogin({ client_id, access_token, refresh_token }) {
         })
     }
 
+    usersStore.loadUsers();
     loggedIn.value = true;
 }
 
