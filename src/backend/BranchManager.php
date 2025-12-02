@@ -736,7 +736,7 @@ class BranchManager implements IWebApp
     {
         $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
         // delete branch-specialization assignment by id
-        $branchSpec = new BranchHasSpecialization($this->rootApp->getDatabase());
+        $branchSpec = new BranchSpecialization($this->rootApp->getDatabase());
         $branchSpec->delete($id);
         $this->addLogEntry('delete', 'branchSpecialization', $id, 1, 'Branch specialization deleted: ID ' . $id);
         return json_encode(['message' => 'Branch-specialization assignment deleted successfully']);

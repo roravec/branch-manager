@@ -88,7 +88,7 @@ class BranchHasSpecialization extends BaseEntity implements ICrud
 
     public function exists(): bool
     {
-        return $this->branchId > 0 && $this->branchSpecializationId > 0;
+        return $this->branchId > 0 && $this->id > 0;
     }
 
     public static function readAll(Database $database, string $sqlpostfix = ""): array
