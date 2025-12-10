@@ -1,21 +1,35 @@
 <script setup>
-defineProps({
+import { onMounted, ref } from 'vue'
+import { useSpecializationsStore } from '@/stores/specializations'
+const props = defineProps({
     branch: {
         type: Object,
         required: true
     }
 })
+
+const store = useSpecializationsStore();
+
+const specialization = ref(null)
+
+onMounted(async () => {
+    console.log(props.branch);
+    await store.loadSpecializations();
+    await store.loadBranchSpec(props.branch.id);
+    specialization.value = store.getBranchSpecStr(props.branch.id);
+})
+
 </script>
 
 <template>
     <div>
-        <div class="header">{{ branch.name }}</div>
-        <div class="industry">{{ branch.utilization }}</div>
-        <div>{{ branch.address }}</div>
-        <div><b>Zamestnanci:</b> {{ branch.employees }}</div>
-        <div>{{ branch.description }}</div>
+        <div class="header">{{ props.branch.name }}</div>
+        <div class="industry">{{ specialization }}</div>
+        <div>{{ props.branch.address }}</div>
+        <div><b>Zamestnanci:</b> {{ props.branch.employees }}</div>
+        <div>{{ props.branch.description }}</div>
         <div v-if="branch.website">
-            🌐 <a :href="branch.website" target="_blank">{{ branch.website }}</a>
+            🌐 <a :href="branch.website" target="_blank">{{ props.branch.website }}</a>
         </div>
     </div>
 </template>

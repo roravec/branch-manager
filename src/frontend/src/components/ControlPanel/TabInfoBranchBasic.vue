@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { geocodeAddress } from '@/utils/geocode.js'
 import { useUserStore } from '@/stores/user'
 import { useBranchStore } from '@/stores/branches'
+import { useSpecializationsStore } from '@/stores/specializations'
+import api from '@/api.js'
 
 const props = defineProps({
     branch: Object
@@ -13,7 +15,10 @@ const geoError = ref(null);
 
 const userStore = useUserStore();
 const branchStore = useBranchStore();
+const specializationsStore = useSpecializationsStore();
 
+const selectedSpecId = ref(null)
+const hasSpec = ref(false)
 
 async function saveBranch() {
     const formData = new FormData()
@@ -26,7 +31,9 @@ async function saveBranch() {
     formData.append('utilization', props.branch.utilization);
     formData.append('employees', props.branch.employees);
 
-    const result = await branchStore.updateBranch(props.branch.id, formData);
+    await branchStore.updateBranch(props.branch.id, formData);
+
+    await specializationsStore.assignSpecialization(props.branch.id, selectedSpecId.value, hasSpec);
 }
 
 async function updateBranchAddress() {
@@ -42,6 +49,20 @@ async function deleteBranch() {
 
     const result = branchStore.deleteBranch(props.branch.id);
 }
+
+onMounted(async () => {
+    await specializationsStore.loadSpecializations()
+    try {
+        const res = await api.get(`/branchHasSpec/${props.branch.id}`)
+        if (res.data && res.data.length > 0) {
+            hasSpec.value = true
+            selectedSpecId.value = Number(res.data[0].branchSpecializationId);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+})
+
 </script>
 
 
@@ -68,8 +89,18 @@ async function deleteBranch() {
                 <td><input v-model="props.branch.coordinates" :readonly="!userStore.isAdmin" /></td>
             </tr>
             <tr>
-                <th>Zameranie</th>
+                <th>Vytaženosť</th>
                 <td><input v-model="props.branch.utilization" :readonly="!userStore.isAdmin" /></td>
+            </tr>
+            <tr>
+                <th>Špecializácia</th>
+                <td>
+                    <select v-model="selectedSpecId" class="dropdown">
+                        <option v-for="spec in specializationsStore.allSpecializations" :key="spec.id" :value="spec.id">
+                            {{ spec.name }}
+                        </option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <th>Popis</th>
@@ -91,5 +122,9 @@ async function deleteBranch() {
 <style scoped>
 .rightSpacer {
     margin-right: 0.5em;
+}
+
+.dropdown {
+    width: 100%;
 }
 </style>

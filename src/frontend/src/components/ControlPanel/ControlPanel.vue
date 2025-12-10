@@ -32,7 +32,7 @@ const userStore = useUserStore();
 const mockBranch = { name: "Pobočka Bratislava", staff: [{ name: "Jozef" }], resources: [{ type: "Printer", count: 2 }] }
 const mockUser = { name: "Marek", role: "Admin", position: "Vedúci" }
 const mockNotes = [{ text: "note 1" }, { text: "note 2" }]
-const mockLogs = [{ action: "Vytvorenie pobočky", date: "2025-10-08" }]
+
 
 const filterTabs = [
   //filters
@@ -64,7 +64,7 @@ const currentProps = computed(() => {
     case 'branch': return { branch: mockBranch }
     case 'info': return { user: mockUser }
     case 'notes': return { notes: mockNotes }
-    case 'logs': return { logs: mockLogs }
+    case 'logs': return {}
     case 'settings': return { settings: {} }
     default: return {}
   }
