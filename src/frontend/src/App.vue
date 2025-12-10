@@ -7,12 +7,14 @@ import { useUserStore } from '@/stores/user'
 import { useUsersStore } from "@/stores/users"
 import { useBranchStore } from '@/stores/branches'
 import api from '@/api.js'
+import { useSpecializationsStore } from '@/stores/specializations'
 
 const userStore = useUserStore();
 userStore.restore();
 
 const branchStore = useBranchStore();
 const usersStore = useUsersStore();
+const specializationsStore = useSpecializationsStore();
 
 const loggedIn = ref(!!sessionStorage.getItem('access_token'))
 
@@ -43,6 +45,7 @@ async function handleLogin({ client_id, access_token, refresh_token }) {
     }
 
     usersStore.loadUsers();
+    specializationsStore.loadSpecializations();
     loggedIn.value = true;
 }
 
