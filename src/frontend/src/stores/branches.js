@@ -7,6 +7,9 @@ export const useBranchStore = defineStore("branches", {
     loading: false,
     error: null,
 
+    branchEmployeeCounts: {},
+    branchEmployees: {},
+
     filters: {
       district: [],
       utilization: [],
@@ -19,6 +22,11 @@ export const useBranchStore = defineStore("branches", {
     getById: (state) => (id) => state.branches.find((b) => b.id == id),
     allBranches: (state) => state.branches,
     branchCount: (state) => state.branches.length,
+    getBranchEmployees: (state) => (branchId) => state.branchEmployees[branchId] ?? [],
+
+    getBranchEmployeeCount: (state) => (branchId) => {
+      return state.branchEmployeeCounts[branchId] ?? null;
+    },
 
     filteredBranches: (state) => {
       return state.branches.filter((branch) => {
@@ -95,6 +103,44 @@ export const useBranchStore = defineStore("branches", {
         console.error("Chyba pri mazaní pobočky:", err);
         throw err;
       }
+    },
+
+    async loadBranchEmployeeCount(branchId) {
+      try {
+        const res = await api.get(`/branchHasUsers/${branchId}`);
+
+        const count = Array.isArray(res.data) ? res.data.length : 0;
+
+        this.branchEmployeeCounts[branchId] = count;
+        return count;
+      } catch (err) {
+        console.error("Nepodarilo sa načítať používateľov pre pobočku:", err);
+        this.branchEmployeeCounts[branchId] = 0;
+        return 0;
+      }
+    },
+
+    async loadBranchEmployees(branchId, users) {
+      try {
+        const res = await api.get(`/branchHasUsers/${branchId}`);
+        this.branchEmployees[branchId] = res.data.map((item) => ({
+          ...item,
+          user: users.find((u) => u.id == item.userId) ?? { name: "Neznáme", identifier: "" },
+        }));
+      } catch (err) {
+        console.error(err);
+        this.branchEmployees[branchId] = [];
+      }
+    },
+
+    addEmployee(branchId, user) {
+      this.branchEmployees[branchId].push(user);
+    },
+
+    removeEmployee(branchId, employeeId) {
+      this.branchEmployees[branchId] = this.branchEmployees[branchId].filter(
+        (e) => e.id !== employeeId
+      );
     },
 
     setFilter(key, value) {

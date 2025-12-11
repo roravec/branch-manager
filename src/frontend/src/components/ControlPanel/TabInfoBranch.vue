@@ -36,7 +36,7 @@ async function createBranch() {
   formData.append('address', newBranch.value.address);
   formData.append('address2', newBranch.value.address2);
   formData.append('description', newBranch.value.description);
-  formData.append('employees', newBranch.value.employees);
+  formData.append('employees', 0);
   formData.append('utilization', newBranch.value.utilization);
 
   try {
@@ -148,10 +148,6 @@ onMounted(async () => {
           <tr>
             <th>Popis</th>
             <td><input v-model="newBranch.description" :readonly="!userStore.isAdmin" /></td>
-          </tr>
-          <tr>
-            <th>Počet zamestnancov</th>
-            <td><input v-model="newBranch.employees" :readonly="!userStore.isAdmin" /></td>
           </tr>
         </tbody>
       </table>

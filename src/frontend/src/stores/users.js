@@ -3,7 +3,8 @@ import api from '@/api.js'
 
 export const useUsersStore = defineStore('users', {
   state: () => ({
-    users: []
+    users: [],
+    branchEmployees: {},
   }),
 
   getters: {

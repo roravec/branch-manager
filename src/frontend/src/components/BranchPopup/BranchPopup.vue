@@ -1,17 +1,16 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import BranchInfo from './BranchInfo.vue'
 import BranchStaff from './BranchStaff.vue'
-import BranchResources from './BranchResources.vue'
-import api from "@/api.js"
 
 import BranchIcon from '../../assets/icons/BranchPopup/branch.svg'
 import StaffIcon from '../../assets/icons/BranchPopup/staff.svg'
-import ResourcesIcon from '../../assets/icons/BranchPopup/resources.svg'
-import { useUsersStore } from "@/stores/users"
 
-const usersStore = useUsersStore();
-const branchEmployees = ref([]);
+import { useUsersStore } from "@/stores/users"
+import { useBranchStore } from "@/stores/branches"
+
+const branchesStore = useBranchStore()
+const usersStore = useUsersStore()
 
 const props = defineProps({
   branch: { type: Object, required: true }
@@ -22,41 +21,25 @@ const activeTab = ref('branch')
 const componentsMap = {
   branch: BranchInfo,
   staff: BranchStaff,
-  resources: BranchResources
 }
 
 const currentComponent = computed(() => componentsMap[activeTab.value] || BranchInfo)
 
 const currentProps = computed(() => {
-  switch (activeTab.value) {
-    case 'staff':
-      return { staff: branchEmployees.value }
-    case 'resources':
-      return { resources: props.branch?.resources || [] }
-    default:
-      return { branch: props.branch }
+  if (activeTab.value === 'staff') {
+    return { staff: branchesStore.getBranchEmployees(props.branch.id) }
   }
+  return { branch: props.branch }
 })
 
 const tabs = [
   { name: 'branch', icon: BranchIcon },
   { name: 'staff', icon: StaffIcon },
-  { name: 'resources', icon: ResourcesIcon }
 ]
 
 onMounted(async () => {
-  try {
-    const response = await api.get(`/branchHasUsers/${props.branch.id}`)
-    branchEmployees.value = response.data.map(item => {
-      const user = usersStore.users.find(u => u.id == item.userId);
-      return {
-        ...item,
-        user
-      };
-    });
-  } catch (err) {
-    console.error("Chyba pri načítaní:", err)
-  }
+  await usersStore.loadUsers()
+  await branchesStore.loadBranchEmployees(props.branch.id, usersStore.users)
 })
 </script>
 
