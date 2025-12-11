@@ -52,6 +52,7 @@ async function deleteBranch() {
 
 onMounted(async () => {
     await specializationsStore.loadSpecializations()
+    await branchStore.loadBranchEmployeeCount(props.branch.id);
     try {
         const res = await api.get(`/branchHasSpec/${props.branch.id}`)
         if (res.data && res.data.length > 0) {
@@ -108,7 +109,7 @@ onMounted(async () => {
             </tr>
             <tr>
                 <th>Počet zamestnancov</th>
-                <td>{{ props.branch.employees }}</td>
+                <td>{{ branchStore.getBranchEmployeeCount(props.branch.id) }}</td>
             </tr>
         </tbody>
     </table>

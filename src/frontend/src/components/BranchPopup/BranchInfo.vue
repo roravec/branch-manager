@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useSpecializationsStore } from '@/stores/specializations'
+import { useBranchStore } from '@/stores/branches'
 const props = defineProps({
     branch: {
         type: Object,
@@ -9,6 +10,7 @@ const props = defineProps({
 })
 
 const store = useSpecializationsStore();
+const branchStore = useBranchStore();
 
 const specialization = ref(null)
 
@@ -16,6 +18,7 @@ onMounted(async () => {
     console.log(props.branch);
     await store.loadSpecializations();
     await store.loadBranchSpec(props.branch.id);
+    await branchStore.loadBranchEmployeeCount(props.branch.id);
     specialization.value = store.getBranchSpecStr(props.branch.id);
 })
 
@@ -26,11 +29,9 @@ onMounted(async () => {
         <div class="header">{{ props.branch.name }}</div>
         <div class="industry">{{ specialization }}</div>
         <div>{{ props.branch.address }}</div>
-        <div><b>Zamestnanci:</b> {{ props.branch.employees }}</div>
+        <div><b>Zamestnanci:</b> {{ branchStore.getBranchEmployeeCount(props.branch.id) }}</div>
         <div>{{ props.branch.description }}</div>
-        <div v-if="branch.website">
-            🌐 <a :href="branch.website" target="_blank">{{ props.branch.website }}</a>
-        </div>
+
     </div>
 </template>
 

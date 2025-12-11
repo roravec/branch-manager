@@ -2,39 +2,32 @@
 import { ref, onMounted } from "vue"
 import api from "@/api.js"
 import { useUsersStore } from "@/stores/users"
+import { useBranchStore } from "@/stores/branches"
 
 const ROLE_LABELS = {
   0: "Zamestnanec",
   3: "Manažér"
 }
-const editingRole = ref(null);
 
 const props = defineProps({
   branch: Object
 })
 
-const usersStore = useUsersStore();
+const usersStore = useUsersStore()
+const branchesStore = useBranchStore()
 
-const branchEmployees = ref([]);
-const selectedUser = ref(null);
-const loadingUsers = ref(null);
+const selectedUser = ref(null)
+const loadingUsers = ref(false)
+
+const branchEmployees = ref([])
 
 async function loadBranchEmployees() {
-  try {
-    loadingUsers.value = true;
-    const response = await api.get(`/branchHasUsers/${props.branch.id}`)
-    branchEmployees.value = response.data.map(item => {
-      const user = usersStore.users.find(u => u.id == item.userId);
-      return {
-        ...item,
-        user
-      };
-    });
-    loadingUsers.value = false;
-  } catch (err) {
-    loadingUsers.value = false;
-    console.error("Chyba pri načítaní:", err)
-  }
+  loadingUsers.value = true
+  await usersStore.loadUsers()
+  await branchesStore.loadBranchEmployees(props.branch.id, usersStore.users)
+
+  branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
+  loadingUsers.value = false
 }
 
 async function addEmployee() {
@@ -46,8 +39,11 @@ async function addEmployee() {
     formData.append("userId", selectedUser.value)
     await api.post("/branchHasUser", formData)
 
+    const newUser = usersStore.users.find(u => u.id == selectedUser.value)
+    branchesStore.addEmployee(props.branch.id, { userId: selectedUser.value, user: newUser, userRights: 0 })
+    branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
+
     selectedUser.value = null
-    await loadBranchEmployees()
   } catch (err) {
     console.error("Chyba pri pridaní:", err)
   }
@@ -55,35 +51,31 @@ async function addEmployee() {
 
 async function updateUserRole(id, newRole) {
   try {
-    const formData = new FormData();
-    formData.append("branchId", props.branch.id);
-    formData.append("userId", id);
-    formData.append("userRights", newRole);
+    const formData = new FormData()
+    formData.append("branchId", props.branch.id)
+    formData.append("userId", id)
+    formData.append("userRights", newRole)
 
-    await api.post(`/edit/branchHasUser/${id}`, formData);
+    await api.post(`/edit/branchHasUser/${id}`, formData)
 
-    const emp = branchEmployees.value.find(e => e.id === id);
-    if (emp) emp.userRights = newRole;
+    const emp = branchEmployees.value.find(e => e.userId === id)
+    if (emp) emp.userRights = newRole
   } catch (err) {
-    console.error("Chyba pri zmene role:", err);
+    console.error("Chyba pri zmene role:", err)
   }
 }
-
 
 async function removeEmployee(id) {
   try {
-    await api.delete(`/branchHasUser/${id}`);
-    await loadBranchEmployees();
+    await api.delete(`/branchHasUser/${id}`)
+    branchesStore.removeEmployee(props.branch.id, id)
+    branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
   } catch (err) {
-    console.error("Chyba pri odstraňovaní:", err);
+    console.error("Chyba pri odstraňovaní:", err)
   }
 }
 
-
-onMounted(async () => {
-  await usersStore.loadUsers();
-  await loadBranchEmployees();
-})
+onMounted(() => loadBranchEmployees())
 </script>
 
 <template>
