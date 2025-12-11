@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { geocodeAddress } from '@/utils/geocode.js'
 import { useUserStore } from '@/stores/user'
 import { useBranchStore } from '@/stores/branches'
@@ -33,7 +33,7 @@ async function saveBranch() {
 
     await branchStore.updateBranch(props.branch.id, formData);
 
-    await specializationsStore.assignSpecialization(props.branch.id, selectedSpecId.value, hasSpec);
+    await specializationsStore.assignSpecialization(props.branch.id, selectedSpecId.value, hasSpec.value);
 }
 
 async function updateBranchAddress() {
@@ -51,18 +51,42 @@ async function deleteBranch() {
 }
 
 onMounted(async () => {
-    await specializationsStore.loadSpecializations()
-    await branchStore.loadBranchEmployeeCount(props.branch.id);
-    try {
-        const res = await api.get(`/branchHasSpec/${props.branch.id}`)
-        if (res.data && res.data.length > 0) {
-            hasSpec.value = true
-            selectedSpecId.value = Number(res.data[0].branchSpecializationId);
-        }
-    } catch (err) {
-        console.error(err);
-    }
+  await specializationsStore.loadSpecializations()
+  await branchStore.loadBranchEmployeeCount(props.branch.id)
+  await loadBranchSpec(props.branch.id)
 })
+
+async function loadBranchSpec(branchId) {
+  try {
+    const res = await api.get(`/branchHasSpec/${branchId}`)
+    console.log("BRANCH ID", res.data)
+    if (res.data && res.data.length > 0) {
+      const specId = Number(res.data[0].branchSpecializationId)
+      if (specId > 0) {
+        hasSpec.value = true
+        selectedSpecId.value = specId
+      } else {
+        hasSpec.value = false
+        selectedSpecId.value = null
+      }
+    } else {
+      hasSpec.value = false
+      selectedSpecId.value = null
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+watch(
+  () => props.branch.id,
+  async (newId) => {
+    if (newId) {
+      await branchStore.loadBranchEmployeeCount(newId)
+      await loadBranchSpec(newId)
+    }
+  }
+)
 
 </script>
 
@@ -97,6 +121,7 @@ onMounted(async () => {
                 <th>Špecializácia</th>
                 <td>
                     <select v-model="selectedSpecId" class="dropdown">
+                        <option disabled value="null">-- vyber špecializáciu --</option>
                         <option v-for="spec in specializationsStore.allSpecializations" :key="spec.id" :value="spec.id">
                             {{ spec.name }}
                         </option>
