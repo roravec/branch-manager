@@ -31,7 +31,12 @@ const userStore = useUserStore();
 //dummy data
 const mockBranch = { name: "Pobočka Bratislava", staff: [{ name: "Jozef" }], resources: [{ type: "Printer", count: 2 }] }
 const mockUser = { name: "Marek", role: "Admin", position: "Vedúci" }
-const mockNotes = [{ text: "note 1" }, { text: "note 2" }]
+const mockNotes = [
+  { text: "# Poznamka 1\nLorem ipsum dolor sit amet, **consectetur** adipiscing elit.\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+  { text: "# Poznamka 2\nUt enim ad minim veniam, *quis nostrud* exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+  { text: "# Poznamka 3\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n~~Sed ut perspiciatis~~ unde omnis iste natus error sit voluptatem accusantium doloremque laudantium." },
+  { text: "# Poznamka 4\nTotam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.\n- Položka zoznamu 1\n- Položka zoznamu 2\n- Položka zoznamu 3" }
+]
 
 
 const filterTabs = [
