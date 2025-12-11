@@ -540,9 +540,9 @@ class BranchManager implements IWebApp
         // create a new branch-specialization assignment from payload json
         $branchSpecAssignment = new BranchHasSpecialization($this->rootApp->getDatabase());
         $branchSpecAssignment->branchId = isset($_POST['branchId']) ? $_POST['branchId'] : null;
-        $branchSpecAssignment->specId = isset($_POST['specId']) ? $_POST['specId'] : null;
+        $branchSpecAssignment->branchSpecializationId = isset($_POST['specId']) ? $_POST['specId'] : null;
         // check required fields are not empty
-        if (empty($branchSpecAssignment->branchId) || empty($branchSpecAssignment->specId))
+        if (empty($branchSpecAssignment->branchId) || empty($branchSpecAssignment->branchSpecializationId))
         {
             http_response_code(400);
             return json_encode(['error' => 'Missing required fields for branch-specialization assignment']);
