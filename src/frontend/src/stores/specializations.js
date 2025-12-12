@@ -11,7 +11,9 @@ export const useSpecializationsStore = defineStore("specializations", {
     allSpecializations: (state) => state.specializations,
 
     getBranchSpecStr: (state) => (branchId) => {
-      return state.branchSpecs[branchId].name ?? "";
+      const spec = state.branchSpecs[branchId];
+      if (!spec) return "Bez špecializácie";
+      return spec.name;
     },
   },
 
@@ -19,8 +21,7 @@ export const useSpecializationsStore = defineStore("specializations", {
     async loadSpecializations() {
       try {
         const res = await api.get("/branchspecs");  // Endpoint pre špecializácie
-        console.log("BACKEND RESPONSE =", res.data); // Logujeme odpoveď z API
-        console.log("TYPE =", typeof res.data);  // Logujeme typ dát
+
 
         // Uložíme špecializácie do stavu
         this.specializations = res.data;
@@ -38,8 +39,7 @@ export const useSpecializationsStore = defineStore("specializations", {
       formData.append("description", description);
 
       const res = await api.post("/branchspec", formData);
-      console.log("BACKEND RESPONSE =", res.data);
-      console.log("TYPE =", typeof res.data);
+
       await this.loadSpecializations();
     },
 
@@ -49,15 +49,11 @@ export const useSpecializationsStore = defineStore("specializations", {
       formData.append("description", description);
 
       const res = await api.post(`/edit/branchspec/${id}`, formData);
-      console.log("BACKEND RESPONSE =", res.data);
-      console.log("TYPE =", typeof res.data);
       await this.loadSpecializations();
     },
 
     async deleteSpecialization(id) {
       const res = await api.delete(`/branchspec/${id}`);
-      console.log("BACKEND RESPONSE =", res.data);
-      console.log("TYPE =", typeof res.data);
       await this.loadSpecializations();
     },
 
@@ -71,10 +67,8 @@ export const useSpecializationsStore = defineStore("specializations", {
       }
 
       if (hasSpec) {
-        console.log("branch edit spec");
         await api.post(`/edit/branchHasSpec/${branchID}`, formData);
       } else {
-        console.log("branch new spec");
         await api.post("/branchHasSpec", formData);
       }
       await this.loadSpecializations();

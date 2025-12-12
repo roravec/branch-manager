@@ -42,6 +42,7 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 403) {
+      alert("Prístup zamietnutý");
       console.warn("Access forbidden: ", error);
     }
     return Promise.reject(error);

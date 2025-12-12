@@ -44,9 +44,9 @@ watch(utilizations, (newVals) => {
 
 <template>
   <div>
-    <h2>Odvetvie</h2>
+    <h2>Vyťaženosť</h2>
 
-    <input type="text" v-model="searchUtil" placeholder="Hľadať odvetvie" />
+    <input type="text" v-model="searchUtil" placeholder="Hľadať vyťaženosť" />
 
     <div class="select">
       <label v-for="u in filteredUtilizations" :key="u">

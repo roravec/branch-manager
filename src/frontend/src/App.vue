@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted} from "vue"
+import { ref, onMounted } from "vue"
 import LoginPage from "./components/LogIn.vue"
 import Map from './components/Map.vue'
 import ControlPanel from './components/ControlPanel/ControlPanel.vue'
@@ -32,6 +32,14 @@ async function handleLogin({ client_id, access_token, refresh_token }) {
             userStore.clear()
             return
         }
+
+        try {
+            const res = await api.get(userStore.isManager ? `/managedBranches` : `/myBranches`);
+            userStore.setMyBranchesIDs(res.data);
+        } catch (err) {
+            console.error('Nepodarilo sa načítať pouzivatelove pobočky', err)
+        }
+
     } else {
         userStore.setUser({
             client_id: null,
@@ -68,8 +76,8 @@ async function logout() {
 }
 
 onMounted(async () => {
-  await branchStore.loadBranches();
-  await specializationsStore.preloadBranchSpecsForBranches(branchStore.branches);
+    await branchStore.loadBranches();
+    await specializationsStore.preloadBranchSpecsForBranches(branchStore.branches);
 });
 
 </script>

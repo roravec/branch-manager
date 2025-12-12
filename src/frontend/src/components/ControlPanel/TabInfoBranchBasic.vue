@@ -39,7 +39,6 @@ async function saveBranch() {
 
 async function updateBranchAddress() {
     const result = await geocodeAddress(props.branch.address)
-    console.log('Geocode result:', result)
     props.branch.address2 = result.district
     props.branch.coordinates = result.coordinates
 }
@@ -61,7 +60,6 @@ onMounted(async () => {
 async function loadBranchSpec(branchId) {
   try {
     const res = await api.get(`/branchHasSpec/${branchId}`)
-    console.log("BRANCH ID", res.data)
     if (res.data && res.data.length > 0) {
       const specId = Number(res.data[0].branchSpecializationId)
       if (specId > 0) {
@@ -98,31 +96,31 @@ watch(
         <tbody>
             <tr>
                 <th>Názov</th>
-                <td><input v-model="props.branch.name" :readonly="!userStore.isAdmin" /></td>
+                <td><input v-model="props.branch.name" :readonly="!userStore.isManager" /></td>
             </tr>
             <tr>
                 <th>Adresa</th>
                 <td>
-                    <input v-model="props.branch.address" @blur="updateBranchAddress" :readonly="!userStore.isAdmin" />
+                    <input v-model="props.branch.address" @blur="updateBranchAddress" :readonly="!userStore.isManager" />
                     <span v-if="geoError" style="color:red">{{ geoError }}</span>
                 </td>
             </tr>
             <tr>
                 <th>Okres</th>
-                <td><input v-model="props.branch.address2" :readonly="!userStore.isAdmin" /></td>
+                <td><input v-model="props.branch.address2" :readonly="!userStore.isManager" /></td>
             </tr>
             <tr>
                 <th>Súradnice</th>
-                <td><input v-model="props.branch.coordinates" :readonly="!userStore.isAdmin" /></td>
+                <td><input v-model="props.branch.coordinates" :readonly="!userStore.isManager" /></td>
             </tr>
             <tr>
                 <th>Vytaženosť</th>
-                <td><input v-model="props.branch.utilization" :readonly="!userStore.isAdmin" /></td>
+                <td><input v-model="props.branch.utilization" :readonly="!userStore.isManager" /></td>
             </tr>
             <tr>
                 <th>Špecializácia</th>
                 <td>
-                    <select v-model="selectedSpecId" class="dropdown">
+                    <select v-model="selectedSpecId" class="dropdown" :disabled="!userStore.isManager">
                         <option disabled value="null">-- vyber špecializáciu --</option>
                         <option v-for="spec in specializationsStore.allSpecializations" :key="spec.id" :value="spec.id">
                             {{ spec.name }}
@@ -132,7 +130,7 @@ watch(
             </tr>
             <tr>
                 <th>Popis</th>
-                <td><input v-model="props.branch.description" :readonly="!userStore.isAdmin" /></td>
+                <td><input v-model="props.branch.description" :readonly="!userStore.isManager" /></td>
             </tr>
             <tr>
                 <th>Počet zamestnancov</th>
@@ -141,9 +139,9 @@ watch(
         </tbody>
     </table>
     <br>
-    <div v-if="userStore.isAdmin">
+    <div v-if="userStore.isManager">
         <button @click="saveBranch" class="btn rightSpacer">💾 Uložiť zmeny</button>
-        <button @click="deleteBranch" class="btn rightSpacer">🗑️ Vymazať pobočku</button>
+        <button v-if="userStore.isAdmin" @click="deleteBranch" class="btn rightSpacer">🗑️ Vymazať pobočku</button>
     </div>
 </template>
 
