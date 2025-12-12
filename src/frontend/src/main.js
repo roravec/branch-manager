@@ -2,6 +2,7 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import App from "./App.vue";
+import { createPinia } from 'pinia'
 
 //leaflet fix after vite-svg-loader
 import L from "leaflet";
@@ -13,5 +14,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).href,
 });
 
-//main
-createApp(App).mount("#app");
+const app = createApp(App)
+
+const pinia = createPinia()
+app.use(pinia) 
+
+app.mount('#app')

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 import FilterDistrict from './FilterDistrict.vue'
 import FilterIndustry from './FilterIndustry.vue'
@@ -24,11 +25,19 @@ import SettingsIcon from '../../assets/icons/ControlPanel/settings.svg'
 
 import LogOutButton from '../../assets/icons/ControlPanel/logout.svg'
 
+
+const userStore = useUserStore();
+
 //dummy data
 const mockBranch = { name: "Pobočka Bratislava", staff: [{ name: "Jozef" }], resources: [{ type: "Printer", count: 2 }] }
 const mockUser = { name: "Marek", role: "Admin", position: "Vedúci" }
-const mockNotes = [{ text: "note 1" }, { text: "note 2" }]
-const mockLogs = [{ action: "Vytvorenie pobočky", date: "2025-10-08" }]
+const mockNotes = [
+  { text: "# Poznamka 1\nLorem ipsum dolor sit amet, **consectetur** adipiscing elit.\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+  { text: "# Poznamka 2\nUt enim ad minim veniam, *quis nostrud* exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+  { text: "# Poznamka 3\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n~~Sed ut perspiciatis~~ unde omnis iste natus error sit voluptatem accusantium doloremque laudantium." },
+  { text: "# Poznamka 4\nTotam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.\n- Položka zoznamu 1\n- Položka zoznamu 2\n- Položka zoznamu 3" }
+]
+
 
 const filterTabs = [
   //filters
@@ -60,7 +69,7 @@ const currentProps = computed(() => {
     case 'branch': return { branch: mockBranch }
     case 'info': return { user: mockUser }
     case 'notes': return { notes: mockNotes }
-    case 'logs': return { logs: mockLogs }
+    case 'logs': return {}
     case 'settings': return { settings: {} }
     default: return {}
   }
@@ -85,7 +94,7 @@ const toggleTab = (tabName) => {
 
         <div class="tab-separator"></div>
 
-        <button v-for="tab in dataTabs" :key="tab.name" :class="{ active: activeTab === tab.name }"
+        <button v-if="userStore.isLoggedIn" v-for="tab in dataTabs" :key="tab.name" :class="{ active: activeTab === tab.name }"
           @click="toggleTab(tab.name)">
           <component :is="tab.icon" class="icon" />
         </button>

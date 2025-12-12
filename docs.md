@@ -165,16 +165,16 @@ After “refresh token“ expires then you have to make a new login.
   "expires_in": 3600
 }
 
-## PUT
+## PUT - use POST instead due to server limitation
 
-| Endpoint              | Description                             | Required Rights | Parameters                                                                              |
-| --------------------- | --------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
-| `/user/{id}`          | Update an existing user                 | **Admin**       | `name`, `identifier`, `secret_hash`, `rights`, `status`, `type`                         |
-| `/branch/{id}`        | Update branch details                   | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
-| `/branchspec/{id}`    | Update a branch specialization          | **Manager**     | `name`, `description`                                                                   |
-| `/log/{id}`           | Update a log entry                      | **Editor**      | `message`                                                                               |
-| `/branchHasUser/{id}` | Update branch-user assignment           | **Manager**     | `branchId`, `userId`, `userRights`                                                      |
-| `/branchHasSpec/{id}` | Update branch-specialization assignment | **Manager**     | `branchId`, `branchSpecializationId`                                                    |
+| Endpoint                   | Description                             | Required Rights | Parameters                                                                              |
+| -------------------------- | --------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
+| `/edit/user/{id}`          | Update an existing user                 | **Admin**       | `name`, `identifier`, `secret_hash`, `rights`, `status`, `type`                         |
+| `/edit/branch/{id}`        | Update branch details                   | **Manager**     | `name`, `coordinates`, `address`, `address2`, `description`, `employees`, `utilization` |
+| `/edit/branchspec/{id}`    | Update a branch specialization          | **Manager**     | `name`, `description`                                                                   |
+| `/edit/log/{id}`           | Update a log entry                      | **Editor**      | `message`                                                                               |
+| `/edit/branchHasUser/{id}` | Update branch-user assignment           | **Manager**     | `branchId`, `userId`, `userRights`                                                      |
+| `/edit/branchHasSpec/{id}` | Update branch-specialization assignment | **Manager**     | `branchId`, `branchSpecializationId`                                                    |
 ---
 
 ## DELETE
@@ -188,3 +188,24 @@ After “refresh token“ expires then you have to make a new login.
 | `/branchHasUser/{id}` | Delete branch-user assignment           | **Admin**       |
 | `/branchHasSpec/{id}` | Delete branch-specialization assignment | **Admin**       |
 ---
+
+## Example Usage
+
+### Create a Branch
+
+```
+POST /branch
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {access_token}
+
+name=Main%20Office&address=123%20Main%20St
+```
+
+Response:
+```
+{
+  "id": 5,
+  "name": "Main Office",
+  "address": "123 Main St"
+}
+```

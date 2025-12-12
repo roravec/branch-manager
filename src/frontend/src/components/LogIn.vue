@@ -19,19 +19,22 @@ async function login() {
         formData.append("secret", password.value)
         formData.append("storeLogin", 1)
 
-        const response = await axios.post("/api/login", formData)
-        const { access_token, refresh_token, error } = response.data
-        console.log(response.data)
+        const response = await axios.post(import.meta.env.VITE_API_BASE + "/login", formData);
+        const { client_id, access_token, refresh_token, error } = response.data
         if (error || !access_token) {
             alert("Prihlásenie zlyhalo. Skontrolujte meno a heslo.")
             return
         }
 
-        emit("loggedIn", { access_token, refresh_token })
+        emit("loggedIn", { client_id, access_token, refresh_token })
     } catch (error) {
         console.error(error)
         alert("Prihlásenie zlyhalo.")
     }
+}
+
+function continueAsGuest() {
+    emit("loggedIn", { client_id: null, access_token: null, refresh_token: null });
 }
 
 </script>
@@ -44,6 +47,7 @@ async function login() {
             <input type="text" placeholder="Meno" v-model="username" />
             <input type="password" placeholder="Heslo" v-model="password" />
             <button class="btn" @click="login">Prihlásiť sa</button>
+            <button class="btn"@click="continueAsGuest">Pokračovať bez prihlásenia</button>
         </div>
     </div>
 </template>

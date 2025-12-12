@@ -1,15 +1,52 @@
-name: Deploy to FTP
+name: Build and Deploy to FTP
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: src/frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src/frontend
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "using npm ci"
+            npm ci
+          else
+            echo "using npm install"
+            npm install
+          fi
+
+      - name: Build Vue project
+        working-directory: src/frontend
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vue-build
+          path: src/frontend/dist/**
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout repo with submodules
         uses: actions/checkout@v3
@@ -26,6 +63,26 @@ jobs:
             echo "FTP_PASS is set"
           fi
 
+      - name: Download frontend build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vue-build
+          path: vue-build-temp
+
+      - name: Move build files to dist
+        run: |
+          mkdir -p src/frontend/dist
+          rm -rf src/frontend/dist/*
+          shopt -s dotglob
+          if [ -n "$(ls -A vue-build-temp 2>/dev/null || true)" ]; then
+            cp -a vue-build-temp/* src/frontend/dist/
+            ls -l src/frontend/dist
+          else
+            ls -R vue-build-temp || true
+            exit 1
+          fi
+
+          
       - name: Upload submodule files - API root application
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
