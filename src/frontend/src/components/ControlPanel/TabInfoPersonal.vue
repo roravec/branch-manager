@@ -53,6 +53,7 @@ async function saveUser() {
     const index = users.value.findIndex(u => u.id === editableUser.value.id);
     if (index !== -1) users.value[index] = { ...res.data };
     selectedId.value = res.data.id ;
+    alert("Pobočka bol uložený");
   } catch (err) {
     console.error(err);
     alert('Chyba pri ukladaní používateľa!');
@@ -69,7 +70,7 @@ async function deleteUser() {
     users.value = users.value.filter(u => u.id !== editableUser.value.id);
     selectedId.value = '';
     editableUser.value = {};
-
+    alert("Pobočka bol odstránený");
   } catch (err) {
     console.error(err);
     alert('Chyba pri vymazavaní používateľa!');
