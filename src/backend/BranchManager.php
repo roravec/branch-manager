@@ -89,6 +89,8 @@ class BranchManager implements IWebApp
                 return $this->getBranch($id);
             case 'branches':
                 return $this->getBranches();
+            case 'managedBranches':
+                return $this->getManagedBranches();
             case 'branchspec':
                 return $this->getBranchSpec($id);
             case 'branchspecs':
@@ -345,6 +347,24 @@ class BranchManager implements IWebApp
         $branches = Branch::readAll($this->rootApp->getDatabase());
         return json_encode($branches);
     }
+    /**
+     * Returns all branches where user is manager as JSON.
+     * @return string
+     */
+    public function getManagedBranches(): string
+    {
+        $userId = $this->rootApp->getClientAuth()->getClient()->getId();
+        $branchUsers = BranchHasUser::readAll($this->rootApp->getDatabase(), "WHERE userId = $userId AND userRights >= " . UserRights::BRANCHMANAGER);
+        $branches = [];
+        foreach ($branchUsers as $branchUser)
+        {
+            $branch = new Branch($this->rootApp->getDatabase());
+            $branch->read($branchUser->branchId);
+            $branches[] = $branch;
+        }
+        return json_encode($branches);
+    }
+
     /**
      * Returns user details as JSON.
      * @param int $id
