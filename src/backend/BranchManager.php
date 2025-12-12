@@ -638,7 +638,19 @@ class BranchManager implements IWebApp
     public function editUser($id): string
     {
         //return json_encode(['message' => $this->rootApp->getClientAuth()->getClient()->getIdentifier() . " is logged in: " . ($this->rootApp->getClientAuth()->isLoggedIn() ? 'yes' : 'no')]);
-        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
+
+        // find out if current logged user manages any branch
+        $branchHasUser = BranchHasUser::readAll($this->rootApp->getDatabase(), "WHERE userId = " . $this->rootApp->getClientAuth()->getClient()->getId() . " AND userRights >= " . UserRights::BRANCHMANAGER);
+        if (count($branchHasUser) == 0)
+        {
+            // user is not a branch manager for this branch
+            $this->requireRights(UserRights::ADMIN, $this->getUserRights());
+        }
+        else
+        {
+            // user is a branch manager for this branch
+            $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($branchHasUser[0]->branchId));
+        }
         // edit user by id
         $user = new Client($this->rootApp->getDatabase());
         $user->read($id);
