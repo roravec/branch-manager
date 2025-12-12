@@ -67,9 +67,10 @@ async function logout() {
     }
 }
 
-onMounted(() => {
-  branchStore.loadBranches();
-})
+onMounted(async () => {
+  await branchStore.loadBranches();
+  await specializationsStore.preloadBranchSpecsForBranches(branchStore.branches);
+});
 
 </script>
 
