@@ -8,6 +8,7 @@ require_once __DIR__ . '/entities/BranchSpecialization.php';
 class UserRights {
     const NONE = 0;
     const VIEWER = 1;
+    const BRANCHMANAGER = 2;
     const EDITOR = 3;
     const MANAGER = 5;
     const ADMIN = 8;
@@ -221,6 +222,36 @@ class BranchManager implements IWebApp
         return "Method $method not allowed";
     }
 
+    function isBranchManager($branchId): bool
+    {
+        $branchHasUser = BranchHasUser::readAll($this->rootApp->getDatabase(), "WHERE branchId = $branchId AND userId = " . $this->rootApp->getClientAuth()->getClient()->getId() . " AND userRights >= " . UserRights::BRANCHMANAGER);
+        if (count($branchHasUser) == 0)
+        {
+            // user is not a branch manager for this branch
+            return false;
+        }
+        else
+        {
+            // user is a branch manager for this branch
+            return true;
+        }
+    }
+
+    function getUserRights($branchId = 0)
+    {
+        $userRights = $this->rootApp->getClientAuth()->getClient()->getRights();
+        $branchManagerRights = 0;
+        if ($branchId != 0)
+        {
+            $branchHasUser = BranchHasUser::readAll($this->rootApp->getDatabase(), "WHERE branchId = $branchId AND userId = " . $this->rootApp->getClientAuth()->getClient()->getId());
+            if (count($branchHasUser) > 0)
+            {
+                $branchManagerRights = $branchHasUser[0]->userRights;
+            }
+        }
+        return max($userRights, $branchManagerRights);
+    }
+
     /**
      * Registers a new client.
      * @return string
@@ -381,6 +412,12 @@ class BranchManager implements IWebApp
      */
     public function getBranchHasUser($id): string
     {
+        if ($id == 0)
+        {
+            // return error
+            http_response_code(400);
+            return json_encode(['error' => 'Invalid branch ID']);
+        }
         $branchHasUser = new BranchHasUser($this->rootApp->getDatabase());
         $branchHasUser->read($id);
         return json_encode($branchHasUser);
@@ -392,6 +429,12 @@ class BranchManager implements IWebApp
      */
     public function getBranchUsers($id): string
     {
+        if ($id == 0)
+        {
+            // return error
+            http_response_code(400);
+            return json_encode(['error' => 'Invalid branch ID']);
+        }
         $branchUsers = BranchHasUser::readAll($this->rootApp->getDatabase(), "WHERE branchId = $id");
         return json_encode($branchUsers);
     }
@@ -402,6 +445,12 @@ class BranchManager implements IWebApp
      */
     public function getBranchSpecsForBranch($id): string
     {
+        if ($id == 0)
+        {
+            // return error
+            http_response_code(400);
+            return json_encode(['error' => 'Invalid branch ID']);
+        }
         $branchSpecs = BranchHasSpecialization::readAll($this->rootApp->getDatabase(), "WHERE branchId = $id");
         return json_encode($branchSpecs);
     }
@@ -412,6 +461,12 @@ class BranchManager implements IWebApp
      */
     public function getBranchSpecsList($id): string
     {
+        if ($id == 0)
+        {
+            // return error
+            http_response_code(400);
+            return json_encode(['error' => 'Invalid branch ID']);
+        }
         $branchSpecs = BranchHasSpecialization::readAll($this->rootApp->getDatabase(), "WHERE branchId = $id");
         return json_encode($branchSpecs);
     }
@@ -424,7 +479,7 @@ class BranchManager implements IWebApp
      */
     public function createUser(): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // create a new client from payload json
         $client = new Client($this->rootApp->getDatabase());
         $client->identifier = isset($_POST['identifier']) ? $_POST['identifier'] : null;
@@ -446,7 +501,7 @@ class BranchManager implements IWebApp
      */
     public function createBranch(): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::MANAGER, $this->getUserRights());
         // create a new branch from payload json
         $branch = new Branch($this->rootApp->getDatabase());
         $branch->name = isset($_POST['name']) ? $_POST['name'] : null;
@@ -472,7 +527,7 @@ class BranchManager implements IWebApp
      */
     public function createBranchSpec(): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::MANAGER, $this->getUserRights());
         // create a new branch specialization from payload json
         $branchSpec = new BranchSpecialization($this->rootApp->getDatabase());
         $branchSpec->name = isset($_POST['name']) ? $_POST['name'] : null;
@@ -493,7 +548,7 @@ class BranchManager implements IWebApp
      */
     public function createLogEntry(): string
     {
-        $this->requireRights(UserRights::EDITOR, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights());
         // create a new log entry from payload json
         $logEntry = new LogEntry($this->rootApp->getDatabase());
         $logEntry->branchId = isset($_POST['branchId']) ? $_POST['branchId'] : null;
@@ -515,11 +570,11 @@ class BranchManager implements IWebApp
      */
     public function assignUserToBranch(): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
         // create a new branch-user assignment from payload json
         $branchUserAssignment = new BranchHasUser($this->rootApp->getDatabase());
         $branchUserAssignment->branchId = isset($_POST['branchId']) ? $_POST['branchId'] : null;
         $branchUserAssignment->userId = isset($_POST['userId']) ? $_POST['userId'] : null;
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($branchUserAssignment->branchId));
         // check required fields are not empty
         if (empty($branchUserAssignment->branchId) || empty($branchUserAssignment->userId))
         {
@@ -536,11 +591,11 @@ class BranchManager implements IWebApp
      */
     public function assignBranchSpec(): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
         // create a new branch-specialization assignment from payload json
         $branchSpecAssignment = new BranchHasSpecialization($this->rootApp->getDatabase());
         $branchSpecAssignment->branchId = isset($_POST['branchId']) ? $_POST['branchId'] : null;
         $branchSpecAssignment->branchSpecializationId = isset($_POST['specId']) ? $_POST['specId'] : null;
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($branchSpecAssignment->branchId));
         // check required fields are not empty
         if (empty($branchSpecAssignment->branchId) || empty($branchSpecAssignment->branchSpecializationId))
         {
@@ -548,7 +603,7 @@ class BranchManager implements IWebApp
             return json_encode(['error' => 'Missing required fields for branch-specialization assignment']);
         }
         $branchSpecAssignment->create();
-        $this->addLogEntry('create', 'branchSpecAssignment', $branchSpecAssignment->id, 1, 'New branch-specialization assignment created: Branch ID ' . $branchSpecAssignment->branchId . ', Spec ID ' . $branchSpecAssignment->specId);
+        $this->addLogEntry('create', 'branchSpecAssignment', $branchSpecAssignment->id, 1, 'New branch-specialization assignment created: Branch ID ' . $branchSpecAssignment->branchId . ', Spec ID ' . $branchSpecAssignment->branchSpecializationId);
         return json_encode($branchSpecAssignment);
     }
 
@@ -563,7 +618,7 @@ class BranchManager implements IWebApp
     public function editUser($id): string
     {
         //return json_encode(['message' => $this->rootApp->getClientAuth()->getClient()->getIdentifier() . " is logged in: " . ($this->rootApp->getClientAuth()->isLoggedIn() ? 'yes' : 'no')]);
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // edit user by id
         $user = new Client($this->rootApp->getDatabase());
         $user->read($id);
@@ -590,7 +645,7 @@ class BranchManager implements IWebApp
      */
     public function editBranch($id): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($id));
         // edit branch by id
         $branch = new Branch($this->rootApp->getDatabase());
         $branch->read($id);
@@ -617,7 +672,7 @@ class BranchManager implements IWebApp
      */
     public function editBranchSpec($id): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::MANAGER, $this->getUserRights());
         // edit branch specialization by id
         $branchSpec = new BranchSpecialization($this->rootApp->getDatabase());
         $branchSpec->read($id);
@@ -639,7 +694,7 @@ class BranchManager implements IWebApp
      */
     public function editLogEntry($id): string
     {
-        $this->requireRights(UserRights::EDITOR, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // edit log entry by id
         $logEntry = new LogEntry($this->rootApp->getDatabase());
         $logEntry->read($id);
@@ -659,7 +714,6 @@ class BranchManager implements IWebApp
      */
     public function editBranchUserAssignment($id): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
         // edit branch-user assignment by id
         $branchUserAssignment = new BranchHasUser($this->rootApp->getDatabase());
         $branchUserAssignment->read($id);
@@ -668,6 +722,7 @@ class BranchManager implements IWebApp
             return json_encode(['error' => 'Branch-user assignment not found']);
         }
         $branchUserAssignment->branchId = isset($_POST['branchId']) ? $_POST['branchId'] : $branchUserAssignment->branchId;
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($branchUserAssignment->branchId));
         $branchUserAssignment->userId = isset($_POST['userId']) ? $_POST['userId'] : $branchUserAssignment->userId;
         $branchUserAssignment->userRights = isset($_POST['userRights']) ? $_POST['userRights'] : $branchUserAssignment->userRights;
 
@@ -682,7 +737,7 @@ class BranchManager implements IWebApp
      */
     public function editBranchSpecAssignment($id): string
     {
-        $this->requireRights(UserRights::MANAGER, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::EDITOR, $this->getUserRights());
         // edit branch-specialization assignment by id
         $branchSpecAssignment = new BranchHasSpecialization($this->rootApp->getDatabase());
         $branchSpecAssignment->read($id);
@@ -706,7 +761,7 @@ class BranchManager implements IWebApp
      */
     public function deleteUser($id): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // delete user by id
         $user = new Client($this->rootApp->getDatabase());
         $user->delete($id);
@@ -720,7 +775,7 @@ class BranchManager implements IWebApp
      */
     public function deleteBranch($id): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // delete branch by id
         $branch = new Branch($this->rootApp->getDatabase());
         $branch->delete($id);
@@ -734,7 +789,7 @@ class BranchManager implements IWebApp
      */
     public function deleteBranchSpec($id): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::EDITOR, $this->getUserRights());
         // delete branch-specialization assignment by id
         $branchSpec = new BranchSpecialization($this->rootApp->getDatabase());
         $branchSpec->delete($id);
@@ -748,7 +803,7 @@ class BranchManager implements IWebApp
      */
     public function deleteLogEntry($id): string
     {
-        $this->requireRights(UserRights::EDITOR, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::ADMIN, $this->getUserRights());
         // delete log entry by id
         $logEntry = new LogEntry($this->rootApp->getDatabase());
         $logEntry->delete($id);
@@ -761,9 +816,10 @@ class BranchManager implements IWebApp
      */
     public function deleteBranchUserAssignment($id): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
         // delete branch-user assignment by id
         $branchUserAssignment = new BranchHasUser($this->rootApp->getDatabase());
+        $branchUserAssignment->read($id);
+        $this->requireRights(UserRights::BRANCHMANAGER, $this->getUserRights($branchUserAssignment->branchId));
         $branchUserAssignment->delete($id);
         $this->addLogEntry('delete', 'branchUserAssignment', $id, 1, 'Branch-user assignment deleted: ID ' . $id);
         return json_encode(['message' => 'Branch-user assignment deleted successfully']);
@@ -775,7 +831,7 @@ class BranchManager implements IWebApp
      */
     public function deleteBranchSpecAssignment($id): string
     {
-        $this->requireRights(UserRights::ADMIN, $this->rootApp->getClientAuth()->getClient()->getRights());
+        $this->requireRights(UserRights::EDITOR, $this->getUserRights());
         // delete branch-specialization assignment by id
         $branchSpecAssignment = new BranchHasSpecialization($this->rootApp->getDatabase());
         $branchSpecAssignment->delete($id);
