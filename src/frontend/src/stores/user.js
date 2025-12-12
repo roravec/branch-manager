@@ -16,12 +16,13 @@ export const useUserStore = defineStore("user", {
     refresh_token: null,
     token_expiry: null,
     refreshTimer: null,
+    managedBranchesIDs: [],
   }),
 
   getters: {
     isLoggedIn: (state) => !!state.access_token,
     isAdmin: (state) => state.rights > 3 && state.rights < 11,
-    isManager: (state) => state.rights == 2 || state.rights == 3,
+    isManager: (state) => state.rights == 2 || state.rights == 3 || state.isAdmin,
   },
 
   actions: {
@@ -97,6 +98,15 @@ export const useUserStore = defineStore("user", {
           this.refreshAccessToken();
         }, refreshIn);
       }
+    },
+
+    setMyBranchesIDs(branches) {
+      this.managedBranchesIDs = branches.map((branch) => branch.id);
+      console.log(branches)
+      const userData = JSON.parse(sessionStorage.getItem("user")) || {};
+      userData.managedBranchesIDs = this.managedBranchesIDs;
+
+      sessionStorage.setItem("user", JSON.stringify(userData));
     },
 
     restore() {

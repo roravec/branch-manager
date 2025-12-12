@@ -41,7 +41,7 @@ async function createBranch() {
 
   try {
     const created = await branchStore.createBranch(formData);
-    selectedId.value = created.id ;
+    selectedId.value = created.id;
     creatingNewBranch.value = false;
     alert("Pobočka bola vytvorená");
   } catch (err) {
@@ -67,10 +67,17 @@ const componentsMap = {
 const currentComponent = computed(() => componentsMap[activeTab.value] || TabInfoBranchBasic);
 
 async function updateBranchAddress() {
-    const result = await geocodeAddress(newBranch.value.address);
-    newBranch.value.address2 = result.district;
-    newBranch.value.coordinates = result.coordinates;
+  const result = await geocodeAddress(newBranch.value.address);
+  newBranch.value.address2 = result.district;
+  newBranch.value.coordinates = result.coordinates;
 }
+
+const visibleBranches = computed(() => {
+  if (!userStore.isAdmin) {
+    return branchStore.branches.filter(b => userStore.managedBranchesIDs.includes(b.id));
+  }
+  return branchStore.branches;
+});
 
 watch(selectedId, () => {
   activeTab.value = 'basic';
@@ -87,14 +94,14 @@ onMounted(async () => {
 <template>
   <div class="branch-content-container">
     <h2 v-if="creatingNewBranch">Nová pobočka</h2>
-    <h2 v-else-if="userStore.isAdmin">Pobočky</h2>
+    <h2 v-else-if="userStore.isManager">Pobočky</h2>
     <h2 v-else>Pobočka</h2>
 
     <div v-if="!creatingNewBranch">
       <div class="select-create-row">
-        <select v-model="selectedId" class="dropdown" :disabled="!userStore.isAdmin">
+        <select v-model="selectedId" class="dropdown">
           <option disabled value="">-- Vyber pobočku --</option>
-          <option v-for="b in branchStore.branches" :key="b.id" :value="b.id">
+          <option v-for="b in visibleBranches" :key="b.id" :value="b.id">
             {{ b.name }}
           </option>
         </select>
@@ -125,34 +132,34 @@ onMounted(async () => {
         <tbody>
           <tr>
             <th>Názov</th>
-            <td><input v-model="newBranch.name" :readonly="!userStore.isAdmin" /></td>
+            <td><input v-model="newBranch.name" :readonly="!userStore.isManager" /></td>
           </tr>
           <tr>
             <th>Adresa</th>
             <td>
-              <input v-model="newBranch.address" @blur="updateBranchAddress" :readonly="!userStore.isAdmin" />
+              <input v-model="newBranch.address" @blur="updateBranchAddress" :readonly="!userStore.isManager" />
               <span v-if="geoError" style="color:red">{{ geoError }}</span>
             </td>
           </tr>
           <tr>
             <th>Okres</th>
-            <td><input v-model="newBranch.address2" :readonly="!userStore.isAdmin" /></td>
+            <td><input v-model="newBranch.address2" :readonly="!userStore.isManager" /></td>
           </tr>
           <tr>
             <th>Súradnice</th>
-            <td><input v-model="newBranch.coordinates" :readonly="!userStore.isAdmin" /></td>
+            <td><input v-model="newBranch.coordinates" :readonly="!userStore.isManager" /></td>
           </tr>
           <tr>
             <th>Zameranie</th>
-            <td><input v-model="newBranch.utilization" :readonly="!userStore.isAdmin" /></td>
+            <td><input v-model="newBranch.utilization" :readonly="!userStore.isManager" /></td>
           </tr>
           <tr>
             <th>Popis</th>
-            <td><input v-model="newBranch.description" :readonly="!userStore.isAdmin" /></td>
+            <td><input v-model="newBranch.description" :readonly="!userStore.isManager" /></td>
           </tr>
         </tbody>
       </table>
-      <button v-if="creatingNewBranch" @click="createBranch" class="btn rightSpacer">✅ Vytvoriť pobočku</button>
+      <button v-if="creatingNewBranch" @click="createBranch" class="btn rightSpacer" >✅ Vytvoriť pobočku</button>
       <button v-if="creatingNewBranch" @click="creatingNewBranch = false" class="btn">❌ Zrušiť</button>
     </div>
   </div>

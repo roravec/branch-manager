@@ -15,7 +15,6 @@ const branchStore = useBranchStore();
 const specialization = ref(null)
 
 onMounted(async () => {
-    console.log(props.branch);
     await store.loadSpecializations();
     await store.loadBranchSpec(props.branch.id);
     await branchStore.loadBranchEmployeeCount(props.branch.id);

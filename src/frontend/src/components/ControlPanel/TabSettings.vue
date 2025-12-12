@@ -1,8 +1,10 @@
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
 import { useSpecializationsStore } from "@/stores/specializations";
+import { useUserStore } from '@/stores/user'
 
 const specializations = useSpecializationsStore();
+const userStore = useUserStore();
 
 const selectedId = ref(null);
 
@@ -81,17 +83,17 @@ async function deleteSpec() {
       <h3>Zvolená špecializácia</h3>
       <div class="formRow">
         <label>Názov:</label>
-        <input v-model="editName" />
+        <input v-model="editName" :readonly="!userStore.isAdmin"/>
       </div>
       <div class="formRow">
         <label>Popis:</label>
-        <input v-model="editDescription"></input>
+        <input v-model="editDescription" :readonly="!userStore.isAdmin"></input>
       </div>
-      <button @click="updateSpec" class="btn rightSpacer">Upraviť</button>
-      <button @click="deleteSpec" class="btn">Zmazať</button>
+      <button v-if="userStore.isAdmin" @click="updateSpec" class="btn rightSpacer" >Upraviť</button>
+      <button v-if="userStore.isAdmin" @click="deleteSpec" class="btn">Zmazať</button>
     </div>
     <hr>
-    <div>
+    <div v-if="userStore.isAdmin">
       <h3>Nová špecializácia</h3>
       <div class="formRow">
         <label>Názov:</label>

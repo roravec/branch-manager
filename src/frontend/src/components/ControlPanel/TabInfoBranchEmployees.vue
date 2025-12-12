@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue"
 import api from "@/api.js"
 import { useUsersStore } from "@/stores/users"
 import { useBranchStore } from "@/stores/branches"
+import { useUserStore } from '@/stores/user'
 
 const ROLE_LABELS = {
   0: "Zamestnanec",
@@ -13,6 +14,7 @@ const props = defineProps({
   branch: Object
 })
 
+const userStore = useUserStore();
 const usersStore = useUsersStore()
 const branchesStore = useBranchStore()
 
@@ -44,18 +46,19 @@ async function addEmployee() {
     branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
 
     selectedUser.value = null
-    alert("Zamestnancovi bol pridaný");
+    alert("Zamestnanec bol pridaný")
+    loadBranchEmployees()
   } catch (err) {
     alert("CHYBA pri prídávaní zamestnanca");
     console.error("Chyba pri pridaní:", err)
   }
 }
 
-async function updateUserRole(id, newRole) {
+async function updateUserRole(id, userId, newRole) {
   try {
     const formData = new FormData()
     formData.append("branchId", props.branch.id)
-    formData.append("userId", id)
+    formData.append("userId", userId)
     formData.append("userRights", newRole)
 
     await api.post(`/edit/branchHasUser/${id}`, formData)
@@ -64,7 +67,7 @@ async function updateUserRole(id, newRole) {
     if (emp) emp.userRights = newRole
     alert("Zamestnancovi bola zmenená rola");
   } catch (err) {
-    alert("CHYBA pri zmene rele zamestnanca");
+    alert("CHYBA pri zmene role zamestnanca");
     console.error("Chyba pri zmene role:", err)
   }
 }
@@ -96,26 +99,27 @@ onMounted(() => loadBranchEmployees())
         </tr>
       </thead>
       <tbody>
-        <tr v-for="emp in branchEmployees" :key="emp.id">
+        <tr v-for="emp in branchEmployees" :key="emp.userId">
           <td>{{ emp.user.name }}</td>
           <td>{{ emp.user.identifier }}</td>
           <td>
-            <select v-model="emp.userRights" @change="updateUserRole(emp.id, emp.userRights)">
+            <select v-model="emp.userRights" @change="updateUserRole(emp.id, emp.userId, emp.userRights)"
+              :disabled="!userStore.isManager">
               <option v-for="(label, val) in ROLE_LABELS" :value="val" :key="val">
                 {{ label }}
               </option>
             </select>
           </td>
           <td>
-            <button @click="removeEmployee(emp.id)" class="btn">Odstrániť</button>
+            <button v-if="userStore.isManager" @click="removeEmployee(emp.id)" class="btn">Odstrániť</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <h4>Pridať zamestnanca</h4>
+    <h4 v-if="userStore.isManager">Pridať zamestnanca</h4>
 
-    <select v-model="selectedUser" class="rightSpacer">
+    <select v-if="userStore.isManager" v-model="selectedUser" class="rightSpacer">
       <option disabled value="">-- vyber používateľa --</option>
 
       <option v-for="user in usersStore.users" :key="user.id" :value="user.id"
@@ -124,7 +128,7 @@ onMounted(() => loadBranchEmployees())
       </option>
     </select>
 
-    <button @click="addEmployee" :disabled="!selectedUser" class="btn">➕ Pridať</button>
+    <button v-if="userStore.isManager" @click="addEmployee" :disabled="!selectedUser" class="btn">➕ Pridať</button>
   </div>
   <div v-else>
     Načítavam zamestnancov...

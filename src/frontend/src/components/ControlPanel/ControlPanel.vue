@@ -42,21 +42,26 @@ const mockNotes = [
 const filterTabs = [
   //filters
   { name: 'districts', icon: DistrictIcon, component: FilterDistrict },
-  { name: 'industries', icon: IndustryIcon, component: FilterIndustry },
+  { name: 'other', icon: IndustryIcon, component: FilterOther },
   { name: 'staff', icon: StaffIcon, component: FilterStaff },
-  { name: 'other', icon: OthersIcon, component: FilterOther }
+  { name: 'industries', icon: OthersIcon, component: FilterIndustry },
+
 ]
 
 const dataTabs = [
   //data
   { name: 'branch', icon: BranchIcon, component: TabInfoBranch },
   { name: 'info', icon: InfoIcon, component: TabInfoPersonal },
-  { name: 'notes', icon: NotesIcon, component: TabNotes },
+  //{ name: 'notes', icon: NotesIcon, component: TabNotes },
+
+]
+
+const mngTabs = [
   { name: 'logs', icon: LogsIcon, component: TabLogViewer },
   { name: 'settings', icon: SettingsIcon, component: TabSettings }
 ]
 
-const allTabs = [...filterTabs, ...dataTabs]
+const allTabs = [...filterTabs, ...dataTabs, ...mngTabs]
 const activeTab = ref(null)
 
 const currentTabComponent = computed(() => {
@@ -94,8 +99,13 @@ const toggleTab = (tabName) => {
 
         <div class="tab-separator"></div>
 
-        <button v-if="userStore.isLoggedIn" v-for="tab in dataTabs" :key="tab.name" :class="{ active: activeTab === tab.name }"
-          @click="toggleTab(tab.name)">
+        <button v-if="userStore.isLoggedIn" v-for="tab in dataTabs" :key="tab.name"
+          :class="{ active: activeTab === tab.name }" @click="toggleTab(tab.name)">
+          <component :is="tab.icon" class="icon" />
+        </button>
+
+        <button v-if="userStore.isManager" v-for="tab in mngTabs" :key="tab.name"
+          :class="{ active: activeTab === tab.name }" @click="toggleTab(tab.name)">
           <component :is="tab.icon" class="icon" />
         </button>
 
@@ -221,5 +231,4 @@ const toggleTab = (tabName) => {
     width: 90vw;
   }
 }
-
 </style>
