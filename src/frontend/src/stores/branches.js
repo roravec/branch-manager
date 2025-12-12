@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import api from "@/api.js";
+import { useSpecializationsStore } from "@/stores/specializations";
+
 
 export const useBranchStore = defineStore("branches", {
   state: () => ({
@@ -9,12 +11,14 @@ export const useBranchStore = defineStore("branches", {
 
     branchEmployeeCounts: {},
     branchEmployees: {},
+    branchSpecs: {},
 
     filters: {
       district: [],
       utilization: [],
       employeesMin: null,
       employeesMax: null,
+      specialization: [],
     },
   }),
 
@@ -29,18 +33,34 @@ export const useBranchStore = defineStore("branches", {
     },
 
     filteredBranches: (state) => {
+      const specStore = useSpecializationsStore();
+
       return state.branches.filter((branch) => {
         if (state.filters.district.length && !state.filters.district.includes(branch.address2))
           return false;
+
         if (
           state.filters.utilization.length &&
           !state.filters.utilization.includes(branch.utilization)
         )
           return false;
+
         if (state.filters.employeesMin && branch.employees < state.filters.employeesMin)
           return false;
+
         if (state.filters.employeesMax && branch.employees > state.filters.employeesMax)
           return false;
+
+        // 🔥 filter podľa špecializácie
+        if (state.filters.specialization.length) {
+          const spec = specStore.branchSpecs[branch.id]; // { id, name } alebo null
+          const specId = spec?.id;
+
+          if (!specId || !state.filters.specialization.includes(specId)) {
+            return false;
+          }
+        }
+
         return true;
       });
     },
