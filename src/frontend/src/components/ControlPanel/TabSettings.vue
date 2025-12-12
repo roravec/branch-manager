@@ -40,6 +40,7 @@ async function createSpec() {
   newDescription.value = "";
 
   selectedId.value = specializations.allSpecializations[0]?.id || null;
+  alert("Špecifikácia je vytvorená");
 }
 
 async function updateSpec() {
@@ -50,6 +51,8 @@ async function updateSpec() {
     editName.value,
     editDescription.value
   );
+
+  alert("Špecifikácia bola aktualizovaná");
 }
 
 async function deleteSpec() {
@@ -58,6 +61,7 @@ async function deleteSpec() {
   await specializations.deleteSpecialization(selectedSpec.value.id);
 
   selectedId.value = specializations.allSpecializations[0]?.id || null;
+  alert("Špecifikácia bola vymazaná");
 }
 </script>
 

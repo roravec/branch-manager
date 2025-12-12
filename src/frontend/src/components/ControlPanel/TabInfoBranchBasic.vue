@@ -34,6 +34,7 @@ async function saveBranch() {
     await branchStore.updateBranch(props.branch.id, formData);
 
     await specializationsStore.assignSpecialization(props.branch.id, selectedSpecId.value, hasSpec.value);
+    alert("Pobočka bola upravená");
 }
 
 async function updateBranchAddress() {
@@ -48,6 +49,7 @@ async function deleteBranch() {
     if (!confirmDelete) return;
 
     const result = branchStore.deleteBranch(props.branch.id);
+    alert("Pobočka bola vymazaná");
 }
 
 onMounted(async () => {

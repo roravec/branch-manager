@@ -44,7 +44,9 @@ async function addEmployee() {
     branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
 
     selectedUser.value = null
+    alert("Zamestnancovi bol pridaný");
   } catch (err) {
+    alert("CHYBA pri prídávaní zamestnanca");
     console.error("Chyba pri pridaní:", err)
   }
 }
@@ -60,7 +62,9 @@ async function updateUserRole(id, newRole) {
 
     const emp = branchEmployees.value.find(e => e.userId === id)
     if (emp) emp.userRights = newRole
+    alert("Zamestnancovi bola zmenená rola");
   } catch (err) {
+    alert("CHYBA pri zmene rele zamestnanca");
     console.error("Chyba pri zmene role:", err)
   }
 }
@@ -70,7 +74,9 @@ async function removeEmployee(id) {
     await api.delete(`/branchHasUser/${id}`)
     branchesStore.removeEmployee(props.branch.id, id)
     branchEmployees.value = branchesStore.getBranchEmployees(props.branch.id)
+    alert("Zamestnanec bol odstránený");
   } catch (err) {
+    alert("CHYBA pri odstranovaní zamestnanca");
     console.error("Chyba pri odstraňovaní:", err)
   }
 }

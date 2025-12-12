@@ -43,6 +43,7 @@ async function createBranch() {
     const created = await branchStore.createBranch(formData);
     selectedId.value = created.id ;
     creatingNewBranch.value = false;
+    alert("Pobočka bola vytvorená");
   } catch (err) {
     console.error(err);
     alert('Nepodarilo sa vytvoriť pobočku.');
